@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="Aspire/Aspire.AppHost/Aspire.AppHost.csproj" />
+    <Project Path="Aspire/Aspire.ServiceDefaults/Aspire.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Ballcom.Identity/">
+    <Project Path="src/Ballcom.Identity.Domain/Ballcom.Identity.Domain.csproj" Id="29344cc4-a42c-4280-9f36-a160f11cc3f9" />
+    <Project Path="src/Ballcom.Identity.DomainServices/Ballcom.Identity.DomainServices.csproj" Id="5ff4a1b9-cfba-4563-849c-6390158f9e68" />
+    <Project Path="src/Ballcom.Identity.Infrastructure/Ballcom.Identity.Infrastructure.csproj" Id="f9574e7f-cfd7-4863-9cd9-67555033bc42" />
+    <Project Path="src/Ballcom.Identity.WebAPI/Ballcom.Identity.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Ballcom.WorkerService/">
+    <Project Path="src/Ballcom.MigrationService/Ballcom.MigrationService.csproj" />
+  </Folder>
+</Solution>

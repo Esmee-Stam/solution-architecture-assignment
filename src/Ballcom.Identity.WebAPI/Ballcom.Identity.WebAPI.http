@@ -1,0 +1,6 @@
+@Ballcom.Identity.WebAPI_HostAddress = http://localhost:5089
+
+GET {{Ballcom.Identity.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

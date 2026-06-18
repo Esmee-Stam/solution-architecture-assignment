@@ -1,6 +1,7 @@
 using Ballcom.Identity.Domain.Domain;
 using Ballcom.Identity.DomainServices;
 using Ballcom.Identity.WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ballcom.Identity.WebAPI.Controllers;
@@ -69,6 +70,7 @@ public class AuthController(IUserService userService) : ControllerBase
     }
 
     [HttpPost("logout")]
+    [Authorize]
     public async Task<IActionResult> Logout()
     {
         await userService.LogoutAsync();

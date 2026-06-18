@@ -3,15 +3,13 @@ using Ballcom.Identity.DomainServices.IRepository;
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.Identity.Infrastructure.Repository;
 using Ballcom.Identity.Infrastructure.Service;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddDefaultAuthentication();
 
 // Add services to the container
 builder.Services.AddDbContext<AuthDbContext>(options =>
@@ -28,21 +26,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!))
-    };
-});
 
 // Add repositories and services to the scope
 builder.Services.AddScoped<IUserRepository, UserRepository>();

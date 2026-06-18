@@ -16,12 +16,12 @@ builder.AddServiceDefaults();
 // Add services to the container
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
 builder.Services.AddDbContext<UserDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()

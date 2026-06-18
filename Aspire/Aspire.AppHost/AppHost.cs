@@ -8,35 +8,26 @@ var jwtSecret = configuration["JWT:Secret"];
 var jwtIssuer = configuration["JWT:Issuer"];
 var jwtAudience = configuration["JWT:Audience"];
 
-// Configure RabbitMQ container
+// RabbitMQ
 var rabbitMqConnectionString = configuration.GetConnectionString("messaging");
 
 var rabbitmq = builder.AddConnectionString("messaging");
 
-// Configure SQL Server container
-var sqlPassword = builder.AddParameter("sqlPassword");
-
-var sql = builder
-       .AddSqlServer("sql", password: sqlPassword)
-       .WithDataVolume("AspireDataVolume")
-       .WithLifetime(ContainerLifetime.Persistent)
-       .WithEndpointProxySupport(proxyEnabled: false);
-
-var identityDb = sql.AddDatabase("IdentityDB", databaseName: "IdentityDB");
+// SQL databases per microservice
+var sqlIdentity = builder.AddConnectionString("sql-identity");
 
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
-    .WithReference(identityDb)
-    .WaitFor(identityDb);
+    .WithEnvironment("ConnectionStrings__sql-identity", configuration.GetConnectionString("sql-identity"))
+    .WaitFor(sqlIdentity);
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
-    .WithReference(identityDb)
+    .WithReference(sqlIdentity)
     .WithReference(migration)
     .WaitFor(migration)
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)
-    .WithEnvironment("JWT__Audience", jwtAudience)
-    .WithReference(identityDb);
+    .WithEnvironment("JWT__Audience", jwtAudience);
 
 builder.Build().Run();

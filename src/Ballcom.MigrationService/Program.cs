@@ -10,12 +10,12 @@ builder.Services.AddHostedService<Worker>();
 // Database contexts for migrations
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
 builder.Services.AddDbContext<UserDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
 var host = builder.Build();

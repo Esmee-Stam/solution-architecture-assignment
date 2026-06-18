@@ -52,7 +52,7 @@ Make sure the values are identical to the values defined in the `.env` file to e
 ```json
 {
     "ConnectionStrings:messaging": "...",
-    "Parameters:SqlPassword": "...",
+    "ConnectionStrings:sql-identity": "..."
     "JWT_SECRET": "...",
     "JWT_ISSUER": "...",
     "JWT_AUDIENCE": "..."

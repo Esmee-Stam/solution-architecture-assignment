@@ -9,60 +9,36 @@ namespace Ballcom.Identity.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IUserService userService) : ControllerBase
 {
-    [HttpGet("hello")]
-    public IActionResult Hello()
-    {
-        return Ok(new { Message = "RAAAAAAAAAA" });
-    }
-
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegisterModel registerModel)
     {
-        try
-        {
-            User? user = await userService.RegisterUserAsync(
-                registerModel.Name,
-                registerModel.Email,
-                registerModel.Password,
-                registerModel.Role,
-                registerModel.CompanyName
-            );
+        User? user = await userService.RegisterUserAsync(
+           registerModel.Name,
+           registerModel.Email,
+           registerModel.Password,
+           registerModel.Role,
+           registerModel.CompanyName
+        );
 
-            if (user != null) return Ok(new { Message = "Success", User = user });
-            return BadRequest(new { Message = "Registration failed (returned null)." });
-        }
-        catch (Exception ex)
+        if (user != null)
         {
-            // Dit stuurt de échte foutmelding (zoals een ontbrekende tabel of DB) terug naar Postman!
-            return StatusCode(500, new { Message = ex.Message, InnerException = ex.InnerException?.Message, StackTrace = ex.StackTrace });
+           return Ok(new
+           {
+               Message = "User registered successfully",
+               User = new
+               {
+                   user.Id,
+                   user.Name,
+                   user.Email,
+                   user.Role,
+                   user.CompanyName
+               }
+           });
         }
-        //User? user = await userService.RegisterUserAsync(
-        //    registerModel.Name,
-        //    registerModel.Email,
-        //    registerModel.Password,
-        //    registerModel.Role,
-        //    registerModel.CompanyName
-        //);
-
-        //if (user != null)
-        //{
-        //    return Ok(new
-        //    {
-        //        Message = "User registered successfully",
-        //        User = new
-        //        {
-        //            user.Id,
-        //            user.Name,
-        //            user.Email,
-        //            user.Role,
-        //            user.CompanyName
-        //        }
-        //    });
-        //}
-        //else
-        //{
-        //    return BadRequest(new { Message = "User registration failed." });
-        //}
+        else
+        {
+           return BadRequest(new { Message = "User registration failed." });
+        }
     }
 
     [HttpPost("login")]

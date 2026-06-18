@@ -27,11 +27,13 @@ dotnet build
 Docker Compose is used for container-based execution.
 
 ### .env file
+```env
 Create a .env file in the root or use the provided example:
 SQL_PASSWORD=SuperStrongPassword1234!
 JWT_SECRET=MySuperStrongAndVeryLongJWTSecretKeyOfAtLeast32Characters!
 JWT_ISSUER=Ballcom.IdentityServer
 JWT_AUDIENCE=Ballcom.WebApis
+```
 
 ### Build and start the containers
 ```bash
@@ -47,6 +49,7 @@ Right click on the Aspire.AppHost project -> Manage User Secrets
 Add the following JSON to User Secrets. 
 
 Make sure the values are identical to the values defined in the `.env` file to ensure consistent configuration between Docker and Aspire:
+```json
 {
     "ConnectionStrings:messaging": "...",
     "Parameters:SqlPassword": "...",
@@ -54,6 +57,7 @@ Make sure the values are identical to the values defined in the `.env` file to e
     "JWT_ISSUER": "...",
     "JWT_AUDIENCE": "..."
 }
+```
 
 # Step 2: Start the AppHost
 ### Visual Studio:

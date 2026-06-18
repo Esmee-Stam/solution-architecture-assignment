@@ -27,8 +27,8 @@ dotnet build
 Docker Compose is used for container-based execution.
 
 ### .env file
-```env
 Create a .env file in the root or use the provided example:
+```env
 SQL_PASSWORD=SuperStrongPassword1234!
 JWT_SECRET=MySuperStrongAndVeryLongJWTSecretKeyOfAtLeast32Characters!
 JWT_ISSUER=Ballcom.IdentityServer

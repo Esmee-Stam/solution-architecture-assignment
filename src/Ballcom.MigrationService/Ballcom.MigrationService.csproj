@@ -20,5 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Aspire\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Ballcom.Identity.Infrastructure\Ballcom.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ballcom.ProductCatalog.Infrastructure\Ballcom.ProductCatalog.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 using Ballcom.Identity.Infrastructure.Data;
+using Ballcom.ProductCatalog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -23,10 +24,12 @@ public class Worker(
             // Link database contexts here
             var authContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+            var productCatalogContext = scope.ServiceProvider.GetRequiredService<ProductCatalogDbContext>();
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
             await RunMigrationAsync(userContext, stoppingToken);
+            await RunMigrationAsync(productCatalogContext, stoppingToken);
         } 
         catch (Exception ex)
         {

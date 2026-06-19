@@ -10,4 +10,8 @@
     <Folder Include="IService\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Ballcom.ProductCatalog.Domain\Ballcom.ProductCatalog.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

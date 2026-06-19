@@ -8,6 +8,7 @@ namespace Ballcom.ProductCatalog.Domain.Domain
         public Guid Id { get; set; }
 
         [Required]
+        [StringLength(100)]
         public required string Name { get; set; }
 
         [Required]
@@ -17,6 +18,8 @@ namespace Ballcom.ProductCatalog.Domain.Domain
         public required decimal Price { get; set; }
 
         [Required]
-        public required string Sku { get; set; }
+        [Range(0, int.MaxValue)]
+        public required int StockQuantity { get; set; }
+
     }
 }

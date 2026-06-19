@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ballcom.Identity.WebAPI\Ballcom.Identity.WebAPI.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.MigrationService\Ballcom.MigrationService.csproj" />
+    <ProjectReference Include="..\..\src\Ballcom.ProductCatalog.WebAPI\Ballcom.ProductCatalog.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,25 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ballcom.ProductCatalog.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ballcom.ProductCatalog.Domain.Domain
 {
     public class Product
     {
-        [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public Money Price { get; private set; }
+        public Stock Quantity { get; private set; }
 
-        [Required]
-        [StringLength(100)]
-        public required string Name { get; set; }
+        private Product() { }
 
-        [Required]
-        public required string Description { get; set; }
+        public Product(Guid id, string name, string description, Money price, Stock quantity)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required");
 
-        [Required]
-        public required decimal Price { get; set; }
+            Id = id;
+            Name = name;
+            Description = description;
+            Price = price;
+            Quantity = quantity;
+        }
 
-        [Required]
-        [Range(0, int.MaxValue)]
-        public required int StockQuantity { get; set; }
-
+        public void DecreaseStock(int amount)
+        {
+            Quantity = Quantity.Decrease(amount);
+        }
     }
 }

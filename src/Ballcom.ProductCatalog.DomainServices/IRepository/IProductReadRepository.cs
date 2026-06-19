@@ -2,7 +2,7 @@
 
 namespace Ballcom.ProductCatalog.DomainServices.IRepository
 {
-    public interface IProductRepository
+    public interface IProductReadRepository
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product?> GetProductByIdAsync(Guid id);

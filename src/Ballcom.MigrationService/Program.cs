@@ -1,6 +1,7 @@
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.MigrationService;
-using Ballcom.ProductCatalog.Infrastructure.Data;
+using Ballcom.ProductCatalog.Infrastructure.Data.Read;
+using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -19,9 +20,14 @@ builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
-builder.Services.AddDbContext<ProductCatalogDbContext>(options =>
+builder.Services.AddDbContext<ProductCatalogReadDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog-read"));
+});
+
+builder.Services.AddDbContext<ProductCatalogWriteDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog-write"));
 });
 
 var host = builder.Build();

@@ -1,5 +1,6 @@
 using Ballcom.Identity.Infrastructure.Data;
-using Ballcom.ProductCatalog.Infrastructure.Data;
+using Ballcom.ProductCatalog.Infrastructure.Data.Read;
+using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -24,12 +25,15 @@ public class Worker(
             // Link database contexts here
             var authContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-            var productCatalogContext = scope.ServiceProvider.GetRequiredService<ProductCatalogDbContext>();
+            var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
+            var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
+
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
             await RunMigrationAsync(userContext, stoppingToken);
-            await RunMigrationAsync(productCatalogContext, stoppingToken);
+            await RunMigrationAsync(productCatalogReadContext, stoppingToken);
+            await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
         } 
         catch (Exception ex)
         {

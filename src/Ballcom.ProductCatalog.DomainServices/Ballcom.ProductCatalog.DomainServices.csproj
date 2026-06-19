@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Ballcom.ProductCatalog.Application\Ballcom.ProductCatalog.Application.csproj" />
     <ProjectReference Include="..\Ballcom.ProductCatalog.Domain\Ballcom.ProductCatalog.Domain.csproj" />
   </ItemGroup>
 

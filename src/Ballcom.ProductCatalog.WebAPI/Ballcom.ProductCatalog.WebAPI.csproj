@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Aspire\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\..\Ballcom.ProductCatalog.Application\Ballcom.ProductCatalog.Application.csproj" />
+    <ProjectReference Include="..\Ballcom.ProductCatalog.Application\Ballcom.ProductCatalog.Application.csproj" />
     <ProjectReference Include="..\Ballcom.ProductCatalog.Infrastructure\Ballcom.ProductCatalog.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -1,12 +1,12 @@
-﻿using Ballcom.ProductCatalog.Domain.Domain;
+﻿using Ballcom.ProductCatalog.Application.Interfaces;
+using Ballcom.ProductCatalog.Domain.Domain;
 using Ballcom.ProductCatalog.Domain.ValueObjects;
-using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Events.ProductCatalogEvents;
 using MassTransit;
 
 namespace Ballcom.ProductCatalog.Application.Commands.CreateProduct
 {
-    public class CreateProductHandler(ProductCatalogWriteDbContext context, IPublishEndpoint publishEndpoint)
+    public class CreateProductHandler(IProductWriteRepository repository, IPublishEndpoint publishEndpoint)
     {
         public async Task<Product> Handle(CreateProductCommand command)
         {
@@ -18,9 +18,7 @@ namespace Ballcom.ProductCatalog.Application.Commands.CreateProduct
                 new Stock(command.Stock)
             );
 
-            context.Products.Add(product);
-
-            await context.SaveChangesAsync();
+            await repository.AddProductAsync(product);
 
             await publishEndpoint.Publish(
                 new ProductCreatedEvent(

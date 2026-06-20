@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="IService\" />
+    <PackageReference Include="MassTransit" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ballcom.ProductCatalog.Application\Ballcom.ProductCatalog.Application.csproj" />
     <ProjectReference Include="..\Ballcom.ProductCatalog.Domain\Ballcom.ProductCatalog.Domain.csproj" />
+    <ProjectReference Include="..\contracts\ProductCreatedEvent\Events.csproj" />
+    <ProjectReference Include="..\Ballcom.ProductCatalog.Domain\Ballcom.ProductCatalog.Domain.csproj" />
+    <ProjectReference Include="..\contracts\ProductCreatedEvent\Events.csproj" />
   </ItemGroup>
 
 </Project>

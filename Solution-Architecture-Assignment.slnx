@@ -18,7 +18,7 @@
     <Project Path="src/Ballcom.Identity.WebAPI/Ballcom.Identity.WebAPI.csproj" />
   </Folder>
   <Folder Name="/src/Ballcom.ProductCatalog/">
-    <Project Path="Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" Id="88398769-1bab-4e2d-bc81-fdba95018497" />
+    <Project Path="src/Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" />
     <Project Path="src/Ballcom.ProductCatalog.Domain/Ballcom.ProductCatalog.Domain.csproj" Id="14cf9aba-c757-4e95-9948-957e99627c2a" />
     <Project Path="src/Ballcom.ProductCatalog.Infrastructure/Ballcom.ProductCatalog.Infrastructure.csproj" Id="a63135a2-0e94-46be-af8c-4a306b57b9c3" />
     <Project Path="src/Ballcom.ProductCatalog.WebAPI/Ballcom.ProductCatalog.WebAPI.csproj" />

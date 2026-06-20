@@ -1,9 +1,11 @@
 using Ballcom.ProductCatalog.Application.Commands.CreateProduct;
+using Ballcom.ProductCatalog.Application.Interfaces;
 using Ballcom.ProductCatalog.Application.Queries.GetAllProducts;
 using Ballcom.ProductCatalog.Application.Queries.GetProductById;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Ballcom.ProductCatalog.Infrastructure.Messaging;
+using Ballcom.ProductCatalog.Infrastructure.Repository;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +42,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Add the handlers to the scope.
+// Add the repositories and handlers to the scope.
+builder.Services.AddScoped<IProductReadRepository, ProductReadRepository>();
+builder.Services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
 builder.Services.AddScoped<GetAllProductsHandler>();
 builder.Services.AddScoped<GetProductByIdHandler>();
 builder.Services.AddScoped<CreateProductHandler>();

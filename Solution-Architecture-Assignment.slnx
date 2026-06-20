@@ -8,11 +8,20 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/src/" />
+  <Folder Name="/src/Ballcom.Contracts/">
+    <Project Path="src/contracts/ProductCreatedEvent/Events.csproj" Id="efea50f0-5ec1-407d-abc6-f2381edb3bf2" />
+  </Folder>
   <Folder Name="/src/Ballcom.Identity/">
     <Project Path="src/Ballcom.Identity.Domain/Ballcom.Identity.Domain.csproj" Id="29344cc4-a42c-4280-9f36-a160f11cc3f9" />
     <Project Path="src/Ballcom.Identity.DomainServices/Ballcom.Identity.DomainServices.csproj" Id="5ff4a1b9-cfba-4563-849c-6390158f9e68" />
     <Project Path="src/Ballcom.Identity.Infrastructure/Ballcom.Identity.Infrastructure.csproj" Id="f9574e7f-cfd7-4863-9cd9-67555033bc42" />
     <Project Path="src/Ballcom.Identity.WebAPI/Ballcom.Identity.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Ballcom.ProductCatalog/">
+    <Project Path="src/Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" />
+    <Project Path="src/Ballcom.ProductCatalog.Domain/Ballcom.ProductCatalog.Domain.csproj" Id="14cf9aba-c757-4e95-9948-957e99627c2a" />
+    <Project Path="src/Ballcom.ProductCatalog.Infrastructure/Ballcom.ProductCatalog.Infrastructure.csproj" Id="a63135a2-0e94-46be-af8c-4a306b57b9c3" />
+    <Project Path="src/Ballcom.ProductCatalog.WebAPI/Ballcom.ProductCatalog.WebAPI.csproj" />
   </Folder>
   <Folder Name="/src/Ballcom.WorkerService/">
     <Project Path="src/Ballcom.MigrationService/Ballcom.MigrationService.csproj" />

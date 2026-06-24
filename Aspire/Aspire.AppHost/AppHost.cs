@@ -17,6 +17,8 @@ var rabbitmq = builder.AddConnectionString("messaging");
 var sqlIdentity = builder.AddConnectionString("sql-identity");
 var sqlProductCatalogWrite = builder.AddConnectionString("sql-product-catalog-write");
 var sqlProductCatalogRead = builder.AddConnectionString("sql-product-catalog-read");
+var sqlPaymentEventStore = builder.AddConnectionString("sql-payment-eventstore");
+var sqlPaymentRead = builder.AddConnectionString("sql-payment-read");
 var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
 
 // Migrations
@@ -24,10 +26,14 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlIdentity)
     .WithReference(sqlProductCatalogWrite)
     .WithReference(sqlProductCatalogRead)
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
     .WithReference(sqlCustomerService)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
+    .WaitFor(sqlPaymentEventStore)
+    .WaitFor(sqlPaymentRead)
     .WaitFor(sqlCustomerService);
 
 // API's 
@@ -50,6 +56,13 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
+
+var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-api")
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
+    .WithReference(rabbitmq)
+    .WithReference(migration);
+
 var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_WebAPI>("customerservice-api")
     .WithReference(sqlCustomerService)
     .WithReference(migration)
@@ -59,13 +72,11 @@ var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_Web
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-
 // Import Service
 var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
     .WithReference(rabbitmq)
     .WaitFor(rabbitmq)
     .WaitFor(migration)
     .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
-
 
 builder.Build().Run();

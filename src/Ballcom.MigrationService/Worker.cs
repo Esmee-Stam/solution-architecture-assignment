@@ -1,4 +1,6 @@
 using Ballcom.Identity.Infrastructure.Data;
+using Ballcom.Payment.Infrastructure.Data.EventStore;
+using Ballcom.Payment.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,8 @@ public class Worker(
             var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
             var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
+            var paymentEventStoreContext = scope.ServiceProvider.GetRequiredService<PaymentEventStoreDbContext>();
+            var paymentReadContext = scope.ServiceProvider.GetRequiredService<PaymentReadDbContext>();
 
 
             // Run the migrations
@@ -34,6 +38,8 @@ public class Worker(
             await RunMigrationAsync(userContext, stoppingToken);
             await RunMigrationAsync(productCatalogReadContext, stoppingToken);
             await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
+            await RunMigrationAsync(paymentEventStoreContext, stoppingToken);
+            await RunMigrationAsync(paymentReadContext, stoppingToken);
         } 
         catch (Exception ex)
         {

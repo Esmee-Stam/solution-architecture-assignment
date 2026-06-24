@@ -17,9 +17,10 @@
     <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.9" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Aspire\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\Ballcom.Identity.Infrastructure\Ballcom.Identity.Infrastructure.csproj" />
-    <ProjectReference Include="..\Ballcom.ProductCatalog.Infrastructure\Ballcom.ProductCatalog.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Aspire\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\Ballcom.Payment.Infrastructure\Ballcom.Payment.Infrastructure.csproj" />
+		<ProjectReference Include="..\Ballcom.Identity.Infrastructure\Ballcom.Identity.Infrastructure.csproj" />
+		<ProjectReference Include="..\Ballcom.ProductCatalog.Infrastructure\Ballcom.ProductCatalog.Infrastructure.csproj" />
+	</ItemGroup>
 </Project>

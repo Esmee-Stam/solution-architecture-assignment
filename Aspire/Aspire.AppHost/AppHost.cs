@@ -17,15 +17,22 @@ var rabbitmq = builder.AddConnectionString("messaging");
 var sqlIdentity = builder.AddConnectionString("sql-identity");
 var sqlProductCatalogWrite = builder.AddConnectionString("sql-product-catalog-write");
 var sqlProductCatalogRead = builder.AddConnectionString("sql-product-catalog-read");
+var sqlPaymentEventStore = builder.AddConnectionString("sql-payment-eventstore");
+var sqlPaymentRead = builder.AddConnectionString("sql-payment-read");
 
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
     .WithReference(sqlProductCatalogWrite)
     .WithReference(sqlProductCatalogRead)
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
-    .WaitFor(sqlProductCatalogRead);
+    .WaitFor(sqlProductCatalogRead)
+    .WaitFor(sqlPaymentEventStore)
+    .WaitFor(sqlPaymentRead);
+
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
@@ -39,6 +46,16 @@ var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity
 var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAPI>("productcatalog-api")
     .WithReference(sqlProductCatalogWrite)
     .WithReference(sqlProductCatalogRead)
+    .WithReference(rabbitmq)
+    .WithReference(migration)
+    .WaitFor(migration)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
+
+var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-api")
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
     .WithReference(rabbitmq)
     .WithReference(migration)
     .WaitFor(migration)

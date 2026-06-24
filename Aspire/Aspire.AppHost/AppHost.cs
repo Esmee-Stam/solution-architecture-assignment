@@ -46,4 +46,6 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
+builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi");
+
 builder.Build().Run();

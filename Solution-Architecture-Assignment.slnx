@@ -11,6 +11,12 @@
   <Folder Name="/src/Ballcom.Contracts/">
     <Project Path="src/contracts/ProductCreatedEvent/Events.csproj" Id="efea50f0-5ec1-407d-abc6-f2381edb3bf2" />
   </Folder>
+  <Folder Name="/src/Ballcom.CustomerService/">
+    <Project Path="src/Ballcom.CustomerService.Application/Ballcom.CustomerService.Application.csproj" Id="b2416453-f2c8-4792-8950-8d5df180c320" />
+    <Project Path="src/Ballcom.CustomerService.Domain/Ballcom.CustomerService.Domain.csproj" Id="375ceb4a-1cdc-4ca5-a8de-05749f78d368" />
+    <Project Path="src/Ballcom.CustomerService.Infrastructure/Ballcom.CustomerService.Infrastructure.csproj" Id="ba833fdd-c070-4bdd-997f-193ede272bba" />
+    <Project Path="src/Ballcom.CustomerService.WebAPI/Ballcom.CustomerService.WebAPI.csproj" />
+  </Folder>
   <Folder Name="/src/Ballcom.Identity/">
     <Project Path="src/Ballcom.Identity.Domain/Ballcom.Identity.Domain.csproj" Id="29344cc4-a42c-4280-9f36-a160f11cc3f9" />
     <Project Path="src/Ballcom.Identity.DomainServices/Ballcom.Identity.DomainServices.csproj" Id="5ff4a1b9-cfba-4563-849c-6390158f9e68" />
@@ -30,6 +36,7 @@
     <Project Path="src/Ballcom.ProductCatalog.WebAPI/Ballcom.ProductCatalog.WebAPI.csproj" />
   </Folder>
   <Folder Name="/src/Ballcom.WorkerService/">
+    <Project Path="src/Ballcom.ImportService/Ballcom.ImportService.csproj" />
     <Project Path="src/Ballcom.MigrationService/Ballcom.MigrationService.csproj" />
   </Folder>
 </Solution>

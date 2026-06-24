@@ -1,6 +1,7 @@
 ﻿using Ballcom.Identity.Domain.Domain;
 using Ballcom.Identity.DomainServices;
-using Ballcom.Identity.DomainServices.IRepository;
+using Events.CustomerServiceEvents;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,17 +14,30 @@ namespace Ballcom.Identity.Infrastructure.Service
     public class UserService(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        IUserRepository userRepository,
-        IConfiguration configuration
+        IConfiguration configuration,
+        IBus bus
     ) : IUserService
     {
-        public async Task<User?> RegisterUserAsync(string name, string email, string password, string role, string? companyName)
+        public async Task<bool> RegisterUserAsync(
+            string firstName,
+            string lastName,
+            string? companyName,
+            string? phoneNumber,
+            string? address,
+            string email,
+            string password,
+            string role)
         {
-            if (role != UserRole.Customer && role != UserRole.Employee && role != UserRole.Supplier) return null;
+            if (
+                    role != UserRole.Customer 
+                    && role != UserRole.WarehouseEmployee 
+                    && role != UserRole.Supplier 
+                    && role != UserRole.CustomerServiceEmployee
+                ) return false;
 
             var existingUser = await userManager.FindByEmailAsync(email);
 
-            if (existingUser != null) return null;
+            if (existingUser != null) return false;
 
             var identityUser = new IdentityUser
             {
@@ -35,25 +49,27 @@ namespace Ballcom.Identity.Infrastructure.Service
 
             if (result.Succeeded)
             {
-                var user = new User
-                {
-                    Id = Guid.NewGuid(),
-                    Name = name,
-                    Email = email,
-                    Role = role,
-                    CompanyName = companyName,
-                    IdentityUserId = identityUser.Id
-                };
-
-                await userRepository.AddUserAsync(user);
                 await userManager.AddToRoleAsync(identityUser, role);
-                return user;
+
+                if (role == UserRole.Customer)
+                {
+                    await bus.Publish(new CustomerImportedEvent(
+                        firstName,
+                        lastName,
+                        companyName ?? string.Empty,
+                        phoneNumber ?? string.Empty,
+                        address ?? string.Empty,
+                        identityUser.Id
+                    ));
+                }
+
+                return true;
             }
 
-            return null;
+            return false;
         }
         
-        public async Task<(User user, string Token)?> LoginAsync(string email, string password)
+        public async Task<string?> LoginAsync(string email, string password)
         {
             var signInResult = await signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
 
@@ -65,13 +81,9 @@ namespace Ballcom.Identity.Infrastructure.Service
 
             var roles = await userManager.GetRolesAsync(identityUser!);
 
-            var user = await userRepository.GetUserByEmailAsync(email);
-
-            if (user == null) return null;
-
             var token = GenerateJwtToken(identityUser, roles);
 
-            return (user, token);
+            return token;
         }
 
         public async Task LogoutAsync()

@@ -1,3 +1,4 @@
+using Ballcom.CustomerService.Infrastructure.Data;
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.Payment.Infrastructure.Data.EventStore;
 using Ballcom.Payment.Infrastructure.Data.Read;
@@ -26,20 +27,20 @@ public class Worker(
 
             // Link database contexts here
             var authContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-            var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
             var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
             var paymentEventStoreContext = scope.ServiceProvider.GetRequiredService<PaymentEventStoreDbContext>();
             var paymentReadContext = scope.ServiceProvider.GetRequiredService<PaymentReadDbContext>();
-
+            var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
-            await RunMigrationAsync(userContext, stoppingToken);
             await RunMigrationAsync(productCatalogReadContext, stoppingToken);
             await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
             await RunMigrationAsync(paymentEventStoreContext, stoppingToken);
             await RunMigrationAsync(paymentReadContext, stoppingToken);
+            await RunMigrationAsync(customerServiceContext, stoppingToken);
+
         } 
         catch (Exception ex)
         {

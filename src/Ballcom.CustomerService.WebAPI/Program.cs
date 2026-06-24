@@ -1,37 +1,37 @@
-using Ballcom.Identity.DomainServices;
-using Ballcom.Identity.Infrastructure.Data;
-using Ballcom.Identity.Infrastructure.Service;
+using Ballcom.CustomerService.Application;
+using Ballcom.CustomerService.Application.Services;
+using Ballcom.CustomerService.Infrastructure.Data;
+using Ballcom.CustomerService.Infrastructure.Messaging;
+using Ballcom.CustomerService.Infrastructure.Repository;
 using MassTransit;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddDefaultAuthentication();
+// Add services to the container.
 
-// Add services to the container
-builder.Services.AddDbContext<AuthDbContext>(options =>
+builder.Services.AddDbContext<CustomerDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-customer-service"));
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddRoles<IdentityRole>()
-    .AddDefaultTokenProviders();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<SyncCustomerService>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<CustomerImportedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+
         cfg.ConfigureEndpoints(context);
     });
 });
 
-// Add services to the scope
-builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

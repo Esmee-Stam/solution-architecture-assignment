@@ -4,23 +4,19 @@ using Ballcom.Identity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
+namespace Ballcom.Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20260617202854_InitialAuth")]
-    partial class InitialAuth
+    partial class AuthDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("AuthenticationDB")
                 .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -50,7 +46,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", "AuthenticationDB");
+                    b.ToTable("AspNetRoles", (string)null);
 
                     b.HasData(
                         new
@@ -64,8 +60,15 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                         {
                             Id = "7d8f3b2a-1c5e-4d9f-bf2a-6d8b9a1e2c33",
                             ConcurrencyStamp = "89f38f3c-f8f6-4849-b935-c3ad98f476a0",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
+                            Name = "CustomerServiceEmployee",
+                            NormalizedName = "CUSTOMERSERVICEEMPLOYEE"
+                        },
+                        new
+                        {
+                            Id = "a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+                            ConcurrencyStamp = "71e54a22-310a-4b6d-a112-9cbb82f1470e",
+                            Name = "WarehouseEmployee",
+                            NormalizedName = "WAREHOUSEEMPLOYEE"
                         },
                         new
                         {
@@ -98,7 +101,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", "AuthenticationDB");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -163,7 +166,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", "AuthenticationDB");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -188,7 +191,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", "AuthenticationDB");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -210,7 +213,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", "AuthenticationDB");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -225,7 +228,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", "AuthenticationDB");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -244,7 +247,7 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", "AuthenticationDB");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -13,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MassTransit" Version="9.1.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
 			<PrivateAssets>all</PrivateAssets>
@@ -24,6 +25,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Ballcom.Order.Application\Ballcom.Order.Application.csproj" />
 	  <ProjectReference Include="..\Ballcom.Order.Domain\Ballcom.Order.Domain.csproj" />
+	  <ProjectReference Include="..\contracts\ProductCreatedEvent\Events.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -53,12 +53,12 @@ builder.Services.AddScoped<GetOrderByIdHandler>();
 builder.Services.AddScoped<GetOrdersByCustomerIdHandler>();
 
 // TODO: Gebruik maken van RabbitMQ hier
-builder.Services.AddMassTransit(x =>
+builder.Services.AddMassTransit(options =>
 {
     // Hier plaats je de consumer, kijk naar product catalog voor voorbeeld
-    //x.AddConsumer<Cosumer>();
+    options.AddConsumer<ProductAddedToCartConsumer>();
 
-    x.UsingRabbitMq((context, cfg) =>
+    options.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("messaging"));
 

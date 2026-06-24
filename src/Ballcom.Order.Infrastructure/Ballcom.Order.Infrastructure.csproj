@@ -7,12 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Ballcom.Order.Application\Ballcom.Order.Application.csproj" />
-		<ProjectReference Include="..\Ballcom.Order.Domain\Ballcom.Order.Domain.csproj" />
+	  <Compile Remove="Migrations\**" />
+	  <Content Remove="Migrations\**" />
+	  <EmbeddedResource Remove="Migrations\**" />
+	  <None Remove="Migrations\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Migrations\" />
+		<ProjectReference Include="..\Ballcom.Order.Application\Ballcom.Order.Application.csproj" />
+		<ProjectReference Include="..\Ballcom.Order.Domain\Ballcom.Order.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -29,6 +29,12 @@
     <Project Path="src/Ballcom.Order.Infrastructure/Ballcom.Order.Infrastructure.csproj" Id="ea941e9f-103b-4f0f-a320-36e2a3eb9a57" />
     <Project Path="src/Ballcom.Order.WebAPI/Ballcom.Order.WebAPI.csproj" />
   </Folder>
+  <Folder Name="/src/Ballcom.Payment/">
+    <Project Path="src/Ballcom.Payment.Application/Ballcom.Payment.Application.csproj" />
+    <Project Path="src/Ballcom.Payment.Domain/Ballcom.Payment.Domain.csproj" />
+    <Project Path="src/Ballcom.Payment.Infrastructure/Ballcom.Payment.Infrastructure.csproj" />
+    <Project Path="src/Ballcom.Payment.WebAPI/Ballcom.Payment.WebAPI.csproj" />
+  </Folder>
   <Folder Name="/src/Ballcom.ProductCatalog/">
     <Project Path="src/Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" />
     <Project Path="src/Ballcom.ProductCatalog.Domain/Ballcom.ProductCatalog.Domain.csproj" Id="14cf9aba-c757-4e95-9948-957e99627c2a" />

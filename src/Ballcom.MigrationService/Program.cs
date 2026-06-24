@@ -6,6 +6,8 @@ using Ballcom.Order.Infrastructure.Data.Write;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
+using Ballcom.Payment.Infrastructure.Data.EventStore;
+using Ballcom.Payment.Infrastructure.Data.Read;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -26,6 +28,15 @@ builder.Services.AddDbContext<ProductCatalogReadDbContext>(options =>
 builder.Services.AddDbContext<ProductCatalogWriteDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog-write"));
+});
+builder.Services.AddDbContext<PaymentEventStoreDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-payment-eventstore"));
+});
+
+builder.Services.AddDbContext<PaymentReadDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-payment-read"));
 });
 
 builder.Services.AddDbContext<CustomerDbContext>(options =>

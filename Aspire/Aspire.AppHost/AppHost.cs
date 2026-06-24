@@ -17,6 +17,8 @@ var rabbitmq = builder.AddConnectionString("messaging");
 var sqlIdentity = builder.AddConnectionString("sql-identity");
 var sqlProductCatalogWrite = builder.AddConnectionString("sql-product-catalog-write");
 var sqlProductCatalogRead = builder.AddConnectionString("sql-product-catalog-read");
+var sqlPaymentEventStore = builder.AddConnectionString("sql-payment-eventstore");
+var sqlPaymentRead = builder.AddConnectionString("sql-payment-read");
 var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
 var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
 var sqlOrderRead = builder.AddConnectionString("sql-order-read");
@@ -28,6 +30,8 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlIdentity)
     .WithReference(sqlProductCatalogWrite)
     .WithReference(sqlProductCatalogRead)
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
     .WithReference(sqlCustomerService)
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
@@ -36,6 +40,9 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
+    .WaitFor(sqlPaymentEventStore)
+    .WaitFor(sqlPaymentRead)
+    .WaitFor(sqlCustomerService)
     .WaitFor(sqlCustomerService)
     .WaitFor(sqlProductCatalogRead)
     .WaitFor(sqlShoppingCartRead)
@@ -62,6 +69,13 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
+
+
+var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-api")
+    .WithReference(sqlPaymentEventStore)
+    .WithReference(sqlPaymentRead)
+    .WithReference(rabbitmq)
+    .WithReference(migration);
 
 var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
     .WithReference(sqlOrderWrite)

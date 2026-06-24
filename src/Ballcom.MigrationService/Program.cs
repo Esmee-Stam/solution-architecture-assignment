@@ -16,11 +16,6 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
-builder.Services.AddDbContext<UserDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
-});
-
 builder.Services.AddDbContext<ProductCatalogReadDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog-read"));

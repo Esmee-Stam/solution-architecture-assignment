@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="9.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
@@ -23,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ballcom.Identity.DomainServices\Ballcom.Identity.DomainServices.csproj" />
+    <ProjectReference Include="..\contracts\ProductCreatedEvent\Events.csproj" />
   </ItemGroup>
 
 </Project>

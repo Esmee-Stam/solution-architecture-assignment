@@ -34,6 +34,7 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
     .WithReference(sqlIdentity)
     .WithReference(migration)
+    .WithReference(rabbitmq)
     .WaitFor(migration)
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)

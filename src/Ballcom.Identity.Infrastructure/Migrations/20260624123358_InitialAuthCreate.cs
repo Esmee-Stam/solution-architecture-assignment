@@ -5,20 +5,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
+namespace Ballcom.Identity.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAuth : Migration
+    public partial class InitialAuthCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "AuthenticationDB");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -33,7 +29,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -59,7 +54,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -74,7 +68,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -82,7 +75,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -97,7 +89,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -105,7 +96,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -119,7 +109,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -127,7 +116,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -139,14 +127,12 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -154,7 +140,6 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
-                schema: "AuthenticationDB",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -168,32 +153,29 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalSchema: "AuthenticationDB",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                schema: "AuthenticationDB",
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
                     { "65b9e0e5-7b56-429a-8e2d-3d445c589a11", "98ce0a8a-03a4-41c1-8d49-f9ebd9fa29fd", "Customer", "CUSTOMER" },
-                    { "7d8f3b2a-1c5e-4d9f-bf2a-6d8b9a1e2c33", "89f38f3c-f8f6-4849-b935-c3ad98f476a0", "Employee", "EMPLOYEE" },
-                    { "9c2a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5c", "49dbaa1c-6ab5-449b-8ed1-8a6682f2b81f", "Supplier", "SUPPLIER" }
+                    { "7d8f3b2a-1c5e-4d9f-bf2a-6d8b9a1e2c33", "89f38f3c-f8f6-4849-b935-c3ad98f476a0", "CustomerServiceEmployee", "CUSTOMERSERVICEEMPLOYEE" },
+                    { "9c2a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5c", "49dbaa1c-6ab5-449b-8ed1-8a6682f2b81f", "Supplier", "SUPPLIER" },
+                    { "a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", "71e54a22-310a-4b6d-a112-9cbb82f1470e", "WarehouseEmployee", "WAREHOUSEEMPLOYEE" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
-                schema: "AuthenticationDB",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                schema: "AuthenticationDB",
                 table: "AspNetRoles",
                 column: "NormalizedName",
                 unique: true,
@@ -201,31 +183,26 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
-                schema: "AuthenticationDB",
                 table: "AspNetUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
-                schema: "AuthenticationDB",
                 table: "AspNetUserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
-                schema: "AuthenticationDB",
                 table: "AspNetUserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                schema: "AuthenticationDB",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                schema: "AuthenticationDB",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
@@ -236,32 +213,25 @@ namespace Ballcom.Identity.Infrastructure.Migrations.AuthDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims",
-                schema: "AuthenticationDB");
+                name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims",
-                schema: "AuthenticationDB");
+                name: "AspNetUserClaims");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins",
-                schema: "AuthenticationDB");
+                name: "AspNetUserLogins");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles",
-                schema: "AuthenticationDB");
+                name: "AspNetUserRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens",
-                schema: "AuthenticationDB");
+                name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles",
-                schema: "AuthenticationDB");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers",
-                schema: "AuthenticationDB");
+                name: "AspNetUsers");
         }
     }
 }

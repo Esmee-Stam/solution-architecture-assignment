@@ -16,7 +16,8 @@ namespace Ballcom.CustomerService.Infrastructure.Messaging
                 LastName = message.LastName,
                 CompanyName = message.CompanyName,
                 PhoneNumber = message.PhoneNumber,
-                Address = message.Address
+                Address = message.Address,
+                IdentityUserId = message.IdentityUserId
             });
         }
     }

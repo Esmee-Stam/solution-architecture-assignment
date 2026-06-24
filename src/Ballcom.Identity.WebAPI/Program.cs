@@ -1,8 +1,7 @@
 using Ballcom.Identity.DomainServices;
-using Ballcom.Identity.DomainServices.IRepository;
 using Ballcom.Identity.Infrastructure.Data;
-using Ballcom.Identity.Infrastructure.Repository;
 using Ballcom.Identity.Infrastructure.Service;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,18 +16,21 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
 });
 
-builder.Services.AddDbContext<UserDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-identity"));
-});
-
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders();
 
-// Add repositories and services to the scope
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+// Add services to the scope
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();

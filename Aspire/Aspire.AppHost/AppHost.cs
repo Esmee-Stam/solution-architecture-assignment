@@ -36,7 +36,7 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
-    .WaitFor(sqlCustomerService);
+    .WaitFor(sqlCustomerService)
     .WaitFor(sqlProductCatalogRead)
     .WaitFor(sqlShoppingCartRead)
     .WaitFor(sqlShoppingCartWrite)
@@ -63,24 +63,6 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_WebAPI>("customerservice-api")
-    .WithReference(sqlCustomerService)
-    .WithReference(migration)
-    .WithReference(rabbitmq)
-    .WaitFor(migration)
-    .WithEnvironment("JWT__Secret", jwtSecret)
-    .WithEnvironment("JWT__Issuer", jwtIssuer)
-    .WithEnvironment("JWT__Audience", jwtAudience);
-
-
-// Import Service
-var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
-    .WithReference(rabbitmq)
-    .WaitFor(rabbitmq)
-    .WaitFor(migration)
-    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
-
-
 var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
@@ -90,5 +72,21 @@ var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
+
+var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_WebAPI>("customerservice-api")
+    .WithReference(sqlCustomerService)
+    .WithReference(migration)
+    .WithReference(rabbitmq)
+    .WaitFor(migration)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
+
+// Import Service
+var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
+    .WithReference(rabbitmq)
+    .WaitFor(rabbitmq)
+    .WaitFor(migration)
+    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
 
 builder.Build().Run();

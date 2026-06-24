@@ -13,8 +13,14 @@ namespace Ballcom.Identity.WebAPI.Models
 
     public class UserRegisterModel
     {
-        [Required(ErrorMessage = "Name is required.")]
-        public required string Name { get; set; }
+        [Required(ErrorMessage = "FirstName is required.")]
+        public required string FirstName { get; set; }
+
+        [Required(ErrorMessage = "LastName is required.")]
+        public required string LastName { get; set; }
+        public string? CompanyName { get; set; } = null;
+        public string? PhoneNumber { get; set; } = null;
+        public string? Address { get; set; } = null;
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
@@ -25,10 +31,9 @@ namespace Ballcom.Identity.WebAPI.Models
         public required string Password { get; set; }
 
         [Required(ErrorMessage = "Role is required.")]
-        [RegularExpression("Customer|Employee|Supplier", ErrorMessage = "Role must be either 'Customer', 'Employee', or 'Supplier'.")]
+        [RegularExpression("Customer|WarehouseEmployee|Supplier|CustomerServiceEmployee", ErrorMessage = "Role must be either 'Customer', 'WarehouseEmployee', 'Supplier' or 'CustomerServiceEmployee.")]
         public required string Role { get; set; }
 
-        public string? CompanyName { get; set; } = null;
     }
 
     public class UserLoginModel

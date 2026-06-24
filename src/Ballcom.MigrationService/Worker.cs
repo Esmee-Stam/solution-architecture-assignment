@@ -1,3 +1,4 @@
+using Ballcom.CustomerService.Infrastructure.Data;
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
@@ -24,16 +25,16 @@ public class Worker(
 
             // Link database contexts here
             var authContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-            var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
             var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
+            var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
 
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
-            await RunMigrationAsync(userContext, stoppingToken);
             await RunMigrationAsync(productCatalogReadContext, stoppingToken);
             await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
+            await RunMigrationAsync(customerServiceContext, stoppingToken);
         } 
         catch (Exception ex)
         {

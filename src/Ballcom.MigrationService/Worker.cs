@@ -1,3 +1,4 @@
+using Ballcom.CustomerService.Infrastructure.Data;
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.Order.Infrastructure.Data.Read;
 using Ballcom.Order.Infrastructure.Data.Write;
@@ -26,9 +27,9 @@ public class Worker(
 
             // Link database contexts here
             var authContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-            var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
             var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
+            var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
             var orderWriteContext = scope.ServiceProvider.GetRequiredService<OrderWriteDbContext>();
             var orderReadContext = scope.ServiceProvider.GetRequiredService<OrderReadDbContext>();
             var shoppingCartWriteContext = scope.ServiceProvider.GetRequiredService<ShoppingCartWriteDbContext>();
@@ -37,9 +38,9 @@ public class Worker(
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
-            await RunMigrationAsync(userContext, stoppingToken);
             await RunMigrationAsync(productCatalogReadContext, stoppingToken);
             await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
+            await RunMigrationAsync(customerServiceContext, stoppingToken);
             await RunMigrationAsync(orderWriteContext, stoppingToken);
             await RunMigrationAsync(orderReadContext, stoppingToken);
             await RunMigrationAsync(shoppingCartWriteContext, stoppingToken);

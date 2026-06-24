@@ -3,48 +3,44 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Ballcom.Identity.Infrastructure.Migrations
+namespace Ballcom.CustomerService.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialUser : Migration
+    public partial class InitalCreateCustomerDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "UserDB");
-
             migrationBuilder.CreateTable(
-                name: "Users",
-                schema: "UserDB",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdentityUserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                schema: "UserDB",
-                table: "Users",
-                column: "Email",
-                unique: true);
+                name: "IX_Customers_PhoneNumber",
+                table: "Customers",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users",
-                schema: "UserDB");
+                name: "Customers");
         }
     }
 }

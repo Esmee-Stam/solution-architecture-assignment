@@ -1,4 +1,3 @@
-using Ballcom.Identity.Domain.Domain;
 using Ballcom.Identity.DomainServices;
 using Ballcom.Identity.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,60 +12,39 @@ public class AuthController(IUserService userService) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegisterModel registerModel)
     {
-        User? user = await userService.RegisterUserAsync(
-           registerModel.Name,
+        bool isRegistered = await userService.RegisterUserAsync(
+           registerModel.FirstName,
+           registerModel.LastName,
+           registerModel.CompanyName,
+           registerModel.PhoneNumber,
+           registerModel.Address,
            registerModel.Email,
            registerModel.Password,
-           registerModel.Role,
-           registerModel.CompanyName
+           registerModel.Role
         );
 
-        if (user != null)
+        if (isRegistered)
         {
-           return Ok(new
-           {
-               Message = "User registered successfully",
-               User = new
-               {
-                   user.Id,
-                   user.Name,
-                   user.Email,
-                   user.Role,
-                   user.CompanyName
-               }
-           });
+            return Ok(new { Message = "User registered successfully" });
         }
-        else
-        {
-           return BadRequest(new { Message = "User registration failed." });
-        }
+
+        return BadRequest(new { Message = "User registration failed." });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginModel loginModel)
     {
-        var result = await userService.LoginAsync(loginModel.Email, loginModel.Password);
-        if (result != null)
+        string? token = await userService.LoginAsync(loginModel.Email, loginModel.Password);
+        if (!string.IsNullOrEmpty(token))
         {
-            var (user, token) = result.Value;
             return Ok(new
             {
                 Message = "Login successful",
-                Token = token,
-                User = new
-                {
-                    user.Id,
-                    user.Name,
-                    user.Email,
-                    user.Role,
-                    user.CompanyName
-                }
+                Token = token
             });
         }
-        else
-        {
-            return Unauthorized(new { Message = "Invalid email or password." });
-        }
+
+        return Unauthorized(new { Message = "Invalid email or password." });
     }
 
     [HttpPost("logout")]

@@ -17,15 +17,27 @@ var rabbitmq = builder.AddConnectionString("messaging");
 var sqlIdentity = builder.AddConnectionString("sql-identity");
 var sqlProductCatalogWrite = builder.AddConnectionString("sql-product-catalog-write");
 var sqlProductCatalogRead = builder.AddConnectionString("sql-product-catalog-read");
+var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
+var sqlOrderRead = builder.AddConnectionString("sql-order-read");
+var sqlShoppingCartWrite = builder.AddConnectionString("sql-shopping-cart-write");
+var sqlShoppingCartRead = builder.AddConnectionString("sql-shopping-cart-read");
 
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
     .WithReference(sqlProductCatalogWrite)
     .WithReference(sqlProductCatalogRead)
+    .WithReference(sqlOrderWrite)
+    .WithReference(sqlOrderRead)
+    .WithReference(sqlShoppingCartRead)
+    .WithReference(sqlShoppingCartWrite)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
-    .WaitFor(sqlProductCatalogRead);
+    .WaitFor(sqlProductCatalogRead)
+    .WaitFor(sqlShoppingCartRead)
+    .WaitFor(sqlShoppingCartWrite)
+    .WaitFor(sqlOrderWrite)
+    .WaitFor(sqlOrderRead);
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
@@ -46,6 +58,14 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi");
+var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
+    .WithReference(sqlOrderWrite)
+    .WithReference(sqlOrderRead)
+    .WithReference(sqlShoppingCartRead)
+    .WithReference(sqlShoppingCartWrite)
+    .WithReference(rabbitmq)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
 
 builder.Build().Run();

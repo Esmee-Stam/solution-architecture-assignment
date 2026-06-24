@@ -1,4 +1,6 @@
 using Ballcom.Identity.Infrastructure.Data;
+using Ballcom.Order.Infrastructure.Data.Read;
+using Ballcom.Order.Infrastructure.Data.Write;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,10 @@ public class Worker(
             var userContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
             var productCatalogReadContext = scope.ServiceProvider.GetRequiredService<ProductCatalogReadDbContext>();
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
+            var orderWriteContext = scope.ServiceProvider.GetRequiredService<OrderWriteDbContext>();
+            var orderReadContext = scope.ServiceProvider.GetRequiredService<OrderReadDbContext>();
+            var shoppingCartWriteContext = scope.ServiceProvider.GetRequiredService<ShoppingCartWriteDbContext>();
+            var shoppingCartReadContext = scope.ServiceProvider.GetRequiredService<ShoppingCartReadDbContext>();
 
 
             // Run the migrations
@@ -34,6 +40,10 @@ public class Worker(
             await RunMigrationAsync(userContext, stoppingToken);
             await RunMigrationAsync(productCatalogReadContext, stoppingToken);
             await RunMigrationAsync(productCatalogWriteContext, stoppingToken);
+            await RunMigrationAsync(orderWriteContext, stoppingToken);
+            await RunMigrationAsync(orderReadContext, stoppingToken);
+            await RunMigrationAsync(shoppingCartWriteContext, stoppingToken);
+            await RunMigrationAsync(shoppingCartReadContext, stoppingToken);
         } 
         catch (Exception ex)
         {

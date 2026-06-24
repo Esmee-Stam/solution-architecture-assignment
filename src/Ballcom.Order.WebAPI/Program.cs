@@ -10,6 +10,7 @@ using Ballcom.Order.Infrastructure.Data.Write;
 using Ballcom.Order.Infrastructure.Integration;
 using Ballcom.Order.Infrastructure.Messaging;
 using Ballcom.Order.Infrastructure.Repository;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,17 +18,27 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<OrderWriteDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderWriteDb")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-write"));
+});
 
 builder.Services.AddDbContext<ShoppingCartWriteDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingCartWriteDb")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-write"));
+});
+
 
 builder.Services.AddDbContext<OrderReadDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderReadDb")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-read"));
+});
 
 builder.Services.AddDbContext<ShoppingCartReadDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingCartReadDb")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-read"));
+});
 
+// Add Repositories and Handlers to the scope
 builder.Services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
 builder.Services.AddScoped<IOrderReadRepository, OrderReadRepository>();
 builder.Services.AddScoped<IShoppingCartWriteRepository, ShoppingCartWriteRepository>();
@@ -41,6 +52,21 @@ builder.Services.AddScoped<GetShoppingCartByCustomerIdHandler>();
 builder.Services.AddScoped<GetOrderByIdHandler>();
 builder.Services.AddScoped<GetOrdersByCustomerIdHandler>();
 
+// TODO: Gebruik maken van RabbitMQ hier
+builder.Services.AddMassTransit(x =>
+{
+    // Hier plaats je de consumer, kijk naar product catalog voor voorbeeld
+    //x.AddConsumer<Cosumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+// Dit verwijderen als RabbitMQ werkend is
 builder.Services.AddHttpClient<IProductCatalogClient, ProductCatalogHttpClient>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ProductCatalog:BaseUrl"] ?? "https://localhost:7001");

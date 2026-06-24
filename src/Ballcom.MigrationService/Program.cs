@@ -1,5 +1,7 @@
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.MigrationService;
+using Ballcom.Order.Infrastructure.Data.Read;
+using Ballcom.Order.Infrastructure.Data.Write;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,27 @@ builder.Services.AddDbContext<ProductCatalogReadDbContext>(options =>
 builder.Services.AddDbContext<ProductCatalogWriteDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-product-catalog-write"));
+});
+
+builder.Services.AddDbContext<OrderWriteDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-write"));
+});
+
+builder.Services.AddDbContext<ShoppingCartWriteDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-write"));
+});
+
+
+builder.Services.AddDbContext<OrderReadDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-read"));
+});
+
+builder.Services.AddDbContext<ShoppingCartReadDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-read"));
 });
 
 var host = builder.Build();

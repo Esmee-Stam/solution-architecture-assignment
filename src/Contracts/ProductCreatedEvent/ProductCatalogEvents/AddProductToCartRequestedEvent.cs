@@ -1,7 +1,7 @@
 ﻿namespace Events.ProductCatalogEvents
 {
-    public record ProductAddedToCartEvent(
-        string CustomerId,
+    public record AddProductToCartRequestedEvent(
+        Guid CustomerId,
         Guid ProductId,
         string ProductName,
         decimal Price,

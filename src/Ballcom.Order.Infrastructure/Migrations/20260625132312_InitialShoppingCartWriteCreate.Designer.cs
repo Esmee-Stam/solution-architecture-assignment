@@ -4,6 +4,7 @@ using Ballcom.Order.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ballcom.Order.Infrastructure.Migrations
 {
     [DbContext(typeof(ShoppingCartWriteDbContext))]
-    partial class ShoppingCartWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260625132312_InitialShoppingCartWriteCreate")]
+    partial class InitialShoppingCartWriteCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

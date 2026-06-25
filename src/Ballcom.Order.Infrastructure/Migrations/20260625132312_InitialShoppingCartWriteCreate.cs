@@ -25,20 +25,20 @@ namespace Ballcom.Order.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItem",
+                name: "CartItems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ShoppingCartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    ShoppingCartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItem", x => x.Id);
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItem_ShoppingCarts_ShoppingCartId",
+                        name: "FK_CartItems_ShoppingCarts_ShoppingCartId",
                         column: x => x.ShoppingCartId,
                         principalTable: "ShoppingCarts",
                         principalColumn: "Id",
@@ -46,8 +46,8 @@ namespace Ballcom.Order.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItem_ShoppingCartId",
-                table: "CartItem",
+                name: "IX_CartItems_ShoppingCartId",
+                table: "CartItems",
                 column: "ShoppingCartId");
         }
 
@@ -55,7 +55,7 @@ namespace Ballcom.Order.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CartItem");
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCarts");

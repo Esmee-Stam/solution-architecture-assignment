@@ -31,13 +31,13 @@ public class ShoppingCartReadRepository(
             model.Id,
             model.CustomerId);
 
-        foreach (var item in model.CartItems)
-        {
-            cart.AddItem(new CartItemAggregate(
-                item.ProductId,
-                item.ProductName,
-                item.Quantity));
-        }
+        //foreach (var item in model.CartItems)
+        //{
+        //    cart.AddItem(new CartItemAggregate(
+        //        item.ProductId,
+        //        item.ProductName,
+        //        item.Quantity));
+        //}
 
         return cart;
     }

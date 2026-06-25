@@ -53,8 +53,8 @@ namespace Ballcom.ProductCatalog.WebAPI.Controllers
 
             if (product == null) return NotFound("Product not found.");
 
-            var cartEvent = new ProductAddedToCartEvent(
-                CustomerId: customerId,
+            var cartEvent = new AddProductToCartRequestedEvent(
+                CustomerId: Guid.Parse(customerId),
                 ProductId: product.Id,
                 ProductName: product.Name,
                 Price: product.PriceAmount,

@@ -15,6 +15,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
+builder.AddDefaultAuthentication();
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<OrderWriteDbContext>(options =>
@@ -72,8 +76,14 @@ builder.Services.AddHttpClient<IProductCatalogClient, ProductCatalogHttpClient>(
     client.BaseAddress = new Uri(builder.Configuration["ProductCatalog:BaseUrl"] ?? "https://localhost:7001");
 });
 
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

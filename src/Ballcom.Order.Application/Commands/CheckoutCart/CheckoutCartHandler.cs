@@ -21,7 +21,7 @@ public class CheckoutCartHandler(
         await orderWriteRepository.SaveAsync(order, cancellationToken);
 
         cart.Clear();
-        await cartWriteRepository.SaveAsync(cart, cancellationToken);
+        await cartWriteRepository.SaveAsync(cart);
 
         await eventPublisher.PublishAsync(
             new OrderPlacedIntegrationEvent(

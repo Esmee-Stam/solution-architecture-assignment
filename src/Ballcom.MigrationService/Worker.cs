@@ -8,6 +8,7 @@ using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Ballcom.Order.Infrastructure.Data;
 
 namespace Ballcom.MigrationService;
 
@@ -36,8 +37,7 @@ public class Worker(
             var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
             var orderWriteContext = scope.ServiceProvider.GetRequiredService<OrderWriteDbContext>();
             var orderReadContext = scope.ServiceProvider.GetRequiredService<OrderReadDbContext>();
-            var shoppingCartWriteContext = scope.ServiceProvider.GetRequiredService<ShoppingCartWriteDbContext>();
-            var shoppingCartReadContext = scope.ServiceProvider.GetRequiredService<ShoppingCartReadDbContext>();
+            var shoppingCartContext = scope.ServiceProvider.GetRequiredService<ShoppingCartDbContext>();
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
@@ -48,8 +48,7 @@ public class Worker(
             await RunMigrationAsync(customerServiceContext, stoppingToken);
             await RunMigrationAsync(orderWriteContext, stoppingToken);
             await RunMigrationAsync(orderReadContext, stoppingToken);
-            await RunMigrationAsync(shoppingCartWriteContext, stoppingToken);
-            await RunMigrationAsync(shoppingCartReadContext, stoppingToken);
+            await RunMigrationAsync(shoppingCartContext, stoppingToken);
         } 
         catch (Exception ex)
         {

@@ -1,33 +1,60 @@
 ﻿using Ballcom.Order.Application.Interfaces;
+using Ballcom.Order.Application.Services;
 using Ballcom.Order.Domain.Domain;
-using Events.OrderEvents.ShoppingCartEvents;
+using Ballcom.Order.Domain.Exceptions;
 using Events.ProductCatalogEvents;
 using MassTransit;
 
 namespace Ballcom.Order.Infrastructure.Messaging
 {
     public class ProductAddedToCartConsumer(
-        IShoppingCartReadRepository cartReadRepository,
-        IShoppingCartWriteRepository cartWriteRepository
-        ) : IConsumer<AddProductToCartRequestedEvent>
+        ShoppingCartService service
+    ) : IConsumer<AddProductToCartRequestedEvent>
     {
         public async Task Consume(ConsumeContext<AddProductToCartRequestedEvent> context)
         {
-            var message = context.Message;
+            try
+            {
+                var message = context.Message;
 
-            var cart = await cartReadRepository.GetByCustomerIdAsync(message.CustomerId) ?? new ShoppingCart(Guid.NewGuid(), message.CustomerId);
+                await service.AddProduct(message.CustomerId, message.ProductId, message.ProductName, message.Quantity);
 
-            cart.AddProduct(message.ProductId, message.ProductName, message.Quantity);
+                await context.RespondAsync(new AddProductToCartSuccess("Product added successfully."));
+            }
+            catch (DomainException ex)
+            {
+                await context.RespondAsync(new AddProductToCartFailed(ex.Message));
+            }
 
-            await cartWriteRepository.SaveAsync(cart);
+            //try
+            //{
+            //    var message = context.Message;
 
-            await context.Publish(new CartItemAddedEvent(
-                    message.CustomerId,
-                    message.ProductId,
-                    message.ProductName,
-                    message.Quantity
-                ));
+            //    var cart = await cartWriteRepository.GetOrCreateAsync(message.CustomerId);
+
+
+            //    cart.AddProduct(
+            //        message.ProductId,
+            //        message.ProductName,
+            //        message.Quantity);
+
+            //    await cartWriteRepository.SaveAsync(cart);
+
+            //    await context.Publish(new CartItemAddedEvent(
+            //        message.CustomerId,
+            //        message.ProductId,
+            //        message.ProductName,
+            //        message.Quantity));
+
+            //    await context.RespondAsync(new AddProductToCartSuccess("Product added successfully."));
+            //}
+            //catch (DomainException ex)
+            //{
+            //    await context.RespondAsync(new AddProductToCartFailed(ex.Message));
+            //}
+
         }
+        
 
     }
 }

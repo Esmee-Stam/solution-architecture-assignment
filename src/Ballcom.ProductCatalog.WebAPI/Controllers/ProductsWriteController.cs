@@ -14,7 +14,8 @@ namespace Ballcom.ProductCatalog.WebAPI.Controllers
     public class ProductsWriteController(
         CreateProductHandler createProductHandler,
         GetProductByIdHandler productByIdHandler,
-        IPublishEndpoint publishEndpoint
+        IPublishEndpoint publishEndpoint,
+        IRequestClient<AddProductToCartRequestedEvent> requestClient
         ) : ControllerBase
     {
         [HttpPost]
@@ -62,9 +63,20 @@ namespace Ballcom.ProductCatalog.WebAPI.Controllers
                 Quantity: model.Quantity
             );
 
-            await publishEndpoint.Publish(cartEvent);
+            var response = await requestClient.GetResponse<AddProductToCartSuccess, AddProductToCartFailed>(cartEvent);
 
-            return Ok(new { Message = "Product added to cart successfully." });
+            if (response.Is<AddProductToCartSuccess>(out var success))
+            {
+                return Ok(success.Message);
+            }
+
+            if (response.Is<AddProductToCartFailed>(out var failed))
+            {
+                return BadRequest(new { Error = failed.Message.Message });
+            }
+
+            return StatusCode(500, "Unexpected response from cart service.");
         }
     }
+    
 }

@@ -22,9 +22,7 @@ var sqlPaymentRead = builder.AddConnectionString("sql-payment-read");
 var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
 var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
 var sqlOrderRead = builder.AddConnectionString("sql-order-read");
-var sqlShoppingCartWrite = builder.AddConnectionString("sql-shopping-cart-write");
-var sqlShoppingCartRead = builder.AddConnectionString("sql-shopping-cart-read");
-
+var sqlShoppingCart= builder.AddConnectionString("sql-shopping-cart");
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
@@ -35,8 +33,7 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlCustomerService)
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
-    .WithReference(sqlShoppingCartRead)
-    .WithReference(sqlShoppingCartWrite)
+    .WithReference(sqlShoppingCart)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
@@ -45,8 +42,7 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WaitFor(sqlCustomerService)
     .WaitFor(sqlCustomerService)
     .WaitFor(sqlProductCatalogRead)
-    .WaitFor(sqlShoppingCartRead)
-    .WaitFor(sqlShoppingCartWrite)
+    .WaitFor(sqlShoppingCart)
     .WaitFor(sqlOrderWrite)
     .WaitFor(sqlOrderRead);
 
@@ -80,8 +76,7 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
 var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
-    .WithReference(sqlShoppingCartRead)
-    .WithReference(sqlShoppingCartWrite)
+    .WithReference(sqlShoppingCart)
     .WithReference(rabbitmq)
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)
@@ -97,10 +92,10 @@ var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_Web
     .WithEnvironment("JWT__Audience", jwtAudience);
 
 // Import Service
-var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
-    .WithReference(rabbitmq)
-    .WaitFor(rabbitmq)
-    .WaitFor(migration)
-    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
+//var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
+//    .WithReference(rabbitmq)
+//    .WaitFor(rabbitmq)
+//    .WaitFor(migration)
+//    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
 
 builder.Build().Run();

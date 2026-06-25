@@ -8,6 +8,7 @@ using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 using Ballcom.Payment.Infrastructure.Data.EventStore;
 using Ballcom.Payment.Infrastructure.Data.Read;
+using Ballcom.Order.Infrastructure.Data;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -49,20 +50,15 @@ builder.Services.AddDbContext<OrderWriteDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-write"));
 });
 
-builder.Services.AddDbContext<ShoppingCartWriteDbContext>(options =>
+builder.Services.AddDbContext<ShoppingCartDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-write"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart"));
 });
 
 
 builder.Services.AddDbContext<OrderReadDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-read"));
-});
-
-builder.Services.AddDbContext<ShoppingCartReadDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart-read"));
 });
 
 var host = builder.Build();

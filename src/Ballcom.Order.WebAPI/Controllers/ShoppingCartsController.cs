@@ -1,7 +1,5 @@
-using Ballcom.Order.Application.Commands.CheckoutCart;
-using Ballcom.Order.Application.Commands.RemoveCartItem;
 using Ballcom.Order.Application.DTOs;
-using Ballcom.Order.Application.Queries.GetShoppingCartByCustomerId;
+using Ballcom.Order.Application.Services;
 using Ballcom.Order.Domain.ValueObjects;
 using Ballcom.Order.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +12,8 @@ namespace Ballcom.Order.WebApi.Controllers;
 [Route("api/shopping-carts")]
 [Authorize(Roles = "Customer")]
 public class ShoppingCartsController(
-    RemoveCartItemHandler removeCartItemHandler,
-    CheckoutCartHandler checkoutCartHandler,
-    GetShoppingCartByCustomerIdHandler getShoppingCartByCustomerIdHandler) : ControllerBase
+    ShoppingCartService shoppingCartService
+    ) : ControllerBase
 {
 
     private Guid GetCustomerId()
@@ -31,20 +28,22 @@ public class ShoppingCartsController(
         return customerId;
     }
 
-    // Deze aanpassen
     [HttpGet("{customerId:guid}")]
-    public async Task<ActionResult<ShoppingCartDto>> GetByCustomerId(Guid customerId, CancellationToken cancellationToken)
+    public async Task<ActionResult<ShoppingCartDto>> GetByCustomerId(Guid customerId)
     {
-        var userID = GetCustomerId();
+        var userId = GetCustomerId();
 
-        if (userID != customerId)
+        if (userId != customerId)
         {
-            return Forbid("You are not authorized to access this shopping cart.");
+            return Forbid();
         }
 
-        var result = await getShoppingCartByCustomerIdHandler.Handle(new GetShoppingCartByCustomerIdQuery(customerId));
+        var cart = await shoppingCartService.GetByCustomerId(customerId);
 
-        return result is null ? NotFound() : Ok(result);
+        if (cart is null) return NotFound();
+
+        return Ok(cart);
+
     }
 
     [HttpDelete("items/{productId:guid}")]
@@ -52,7 +51,11 @@ public class ShoppingCartsController(
     {
         var customerId = GetCustomerId();
 
-        await removeCartItemHandler.Handle(new RemoveCartItemCommand(customerId, productId));
+        var cart = await shoppingCartService.GetByCustomerId(customerId);
+
+        if (cart is null) return NotFound();
+
+        await shoppingCartService.RemoveProduct(cart.Id, productId);
 
         return NoContent();
     }
@@ -61,7 +64,8 @@ public class ShoppingCartsController(
     [HttpPost("checkout")]
     public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutCartModel model, CancellationToken cancellationToken)
     {
-        var result = await checkoutCartHandler.Handle(new CheckoutCartCommand(model.CustomerId, model.PaymentMethod), cancellationToken);
-        return Ok(result);
+        //var result = await checkoutCartHandler.Handle(new CheckoutCartCommand(model.CustomerId, model.PaymentMethod), cancellationToken);
+        //return Ok(result);
+        return Ok();
     }
 }

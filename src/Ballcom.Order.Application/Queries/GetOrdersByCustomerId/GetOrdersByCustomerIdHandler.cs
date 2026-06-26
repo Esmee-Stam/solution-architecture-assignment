@@ -8,9 +8,21 @@ public class GetOrdersByCustomerIdHandler(IOrderReadRepository readRepository)
 {
     public async Task<IReadOnlyCollection<OrderDto>> Handle(GetOrdersByCustomerIdQuery query, CancellationToken cancellationToken = default)
     {
-        //IReadOnlyCollection<OrderAggregate> orders = await readRepository.GetByCustomerIdAsync(query.CustomerId, cancellationToken);
-        //return orders.Select(OrderDto.FromDomain).ToList();
+        var orders = await readRepository.GetOrderByCustomerIdAsync(query.CustomerId);
 
-        return null;
+        return orders.Select(o => new OrderDto
+        {
+            Id = o.Id,
+            CustomerId = o.CustomerId,
+            PaymentMethod = o.PaymentMethod,
+            Status = o.Status,
+            CreatedAt = o.CreatedAt,
+            OrderItems = o.OrderItems.Select(oi => new OrderItemDto
+            {
+                ProductId = oi.ProductId,
+                ProductName = oi.ProductName,
+                Quantity = oi.Quantity
+            }).ToList()
+        }).ToList();
     }
 }

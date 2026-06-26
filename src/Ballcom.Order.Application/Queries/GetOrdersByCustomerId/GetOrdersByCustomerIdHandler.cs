@@ -6,7 +6,7 @@ namespace Ballcom.Order.Application.Queries.GetOrdersByCustomerId;
 
 public class GetOrdersByCustomerIdHandler(IOrderReadRepository readRepository)
 {
-    public async Task<IReadOnlyCollection<OrderDto>> Handle(GetOrdersByCustomerIdQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<OrderDto>> Handle(GetOrdersByCustomerIdQuery query)
     {
         var orders = await readRepository.GetOrderByCustomerIdAsync(query.CustomerId);
 

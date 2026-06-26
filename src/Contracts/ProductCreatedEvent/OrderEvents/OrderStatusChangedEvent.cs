@@ -1,4 +1,6 @@
-﻿namespace Events.OrderEvents;
+﻿using Events.OrderEvents.Dto;
+
+namespace Events.OrderEvents;
 
 public record OrderStatusChangedEvent(
     Guid OrderId,
@@ -10,12 +12,3 @@ public record OrderStatusChangedEvent(
     List<OrderItemEventDto> Items,
     DateTime OccurredAt
 );
-
-
-public record OrderItemEventDto(
-    Guid ProductId,
-    string ProductName,
-    int Quantity,
-    decimal UnitPrice
-);
-

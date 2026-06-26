@@ -15,6 +15,8 @@ namespace Ballcom.Order.Infrastructure.Messaging
             {
                 var message = context.Message;
 
+                Console.WriteLine(message );
+
                 await service.AddProduct(
                     message.CustomerId,
                     message.ProductId,

@@ -52,14 +52,26 @@ builder.Services.AddScoped<GetOrdersByCustomerIdHandler>();
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumer<ProductAddedToCartConsumer>();
-    options.AddConsumer<PaymentCompletedConsumer>();
+    options.AddConsumer<OrderPaymentCompletedConsumer>();
     options.AddConsumer<OrderStatusChangedConsumer>();
+    options.AddConsumer<OrderPlacedConsumer>();
    
     options.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("messaging"));
 
         cfg.ConfigureEndpoints(context);
+
+        cfg.ReceiveEndpoint("order-status", e =>
+        {
+            e.UseMessageRetry(r =>
+            {
+                r.Interval(5, TimeSpan.FromSeconds(2));
+            });
+
+            e.ConfigureConsumer<OrderStatusChangedConsumer>(context);
+
+        });
     });
 });
 

@@ -1,13 +1,12 @@
-﻿using Ballcom.Order.Application.DTOs;
-using Ballcom.Order.Application.Interfaces;
-using Ballcom.Order.Domain.ValueObjects;
+﻿using Ballcom.Order.Application.Interfaces;
 using Events.OrderEvents;
+using Events.OrderEvents.Dto;
 using Events.PaymentEvents;
 using MassTransit;
 
 namespace Ballcom.Order.Infrastructure.Messaging
 {
-    public class PaymentCompletedConsumer(IOrderWriteRepository orderWriteRepository) : IConsumer<PaymentCompletedEvent>
+    public class OrderPaymentCompletedConsumer(IOrderWriteRepository orderWriteRepository, IPublishEndpoint endpoint) : IConsumer<PaymentCompletedEvent>
     {
         public async Task Consume(ConsumeContext<PaymentCompletedEvent> context)
         {
@@ -17,15 +16,14 @@ namespace Ballcom.Order.Infrastructure.Messaging
 
             if (order is null) throw new Exception("Order not found");
 
-            order.Confirm();
             order.MarkAsPaid();
 
             await orderWriteRepository.SaveChangesAsync();
 
-            await context.Publish(new OrderStatusChangedEvent(
+            await endpoint.Publish(new OrderStatusChangedEvent(
                     order.Id,
                     order.CustomerId,
-                    order.Status.ToString(),
+                    "Paid",
                     order.TotalPrice.Amount,
                     order.TotalPrice.Currency,
                     order.PaymentMethod.ToString(),

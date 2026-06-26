@@ -12,8 +12,6 @@ namespace Ballcom.Order.Application.DTOs
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        // De geneste collectie van platte item DTO's
         public List<OrderItemDto> OrderItems { get; set; } = new();
     }
 }

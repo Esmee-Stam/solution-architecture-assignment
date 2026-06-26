@@ -15,7 +15,7 @@ public class Order
 
         Id = id;
         CustomerId = customerId;
-        Status = OrderStatus.Draft;
+        Status = OrderStatus.Placed;
         CreatedAt = DateTime.UtcNow;
     }
 
@@ -35,16 +35,15 @@ public class Order
     {
         get
         {
-            if (_orderItems.Any()) return new Money(0m, "EUR");
+            if (!_orderItems.Any())
+                return new Money(0m, "EUR");
 
-            return _orderItems.Select(x => x.TotalPrice).Aggregate((total, next) => total + next);
+            var total = _orderItems
+                .Select(x => x.TotalPrice)
+                .Aggregate((total, next) => total + next);
+
+            return total;
         }
-    }
-
-    private void EnsureCanEdit()
-    {
-        if (Status != OrderStatus.Draft)
-            throw new DomainException("Only a draft order can be edited.");
     }
 
     public void AddItem(
@@ -53,8 +52,6 @@ public class Order
         Money unitPrice,
         int quantity)
     {
-        EnsureCanEdit();
-
 
         var existing = _orderItems.FirstOrDefault(x => x.ProductId == productId);
 
@@ -73,8 +70,6 @@ public class Order
 
     public void RemoveItem(Guid productId)
     {
-        EnsureCanEdit();
-
         var item = _orderItems.FirstOrDefault(x => x.ProductId == productId);
 
         if (item is null) return;
@@ -82,32 +77,16 @@ public class Order
         _orderItems.Remove(item);
     }
 
-    public void Confirm()
-    {
-        if (!OrderItems.Any()) throw new DomainException("An order must contain at least one item.");
-
-        if (Status != OrderStatus.Draft) throw new DomainException("Only a draft order can be confirmed.");
-
-        Status = OrderStatus.Confirmed;
-    }
-
     public void MarkAsPaid()
     {
-        if (Status != OrderStatus.Confirmed) throw new DomainException("Only a confirmed order can be marked as paid.");
+        if (Status != OrderStatus.Placed) throw new DomainException("Only a placed order can be marked as paid.");
 
         Status = OrderStatus.Paid;
     }
 
-    public void StartPicking()
-    {
-        if (Status != OrderStatus.Paid) throw new DomainException("Only a paid order can be marked as picking.");
-
-        Status = OrderStatus.Picking;
-    }
-
     public void MarkPacked()
     {
-        if (Status != OrderStatus.Confirmed) throw new DomainException("Only a confirmed order can be packed.");
+        if (Status != OrderStatus.Paid) throw new DomainException("Only a confirmed order can be packed.");
 
         Status = OrderStatus.Packed;
     }

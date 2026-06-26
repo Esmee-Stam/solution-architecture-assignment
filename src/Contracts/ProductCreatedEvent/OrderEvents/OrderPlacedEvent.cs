@@ -1,10 +1,13 @@
-﻿namespace Events.OrderEvents;
+﻿using Events.OrderEvents.Dto;
+
+namespace Events.OrderEvents;
 
 public record OrderPlacedEvent(
-    Guid OrderId, 
-    Guid CustomerId, 
-    string PaymentMethod, 
+    Guid OrderId,
+    Guid CustomerId,
+    string PaymentMethod,
     decimal TotalAmount,
-    string Currency
-    ); 
+    string Currency,
+    List<OrderItemEventDto> Items
+);
 

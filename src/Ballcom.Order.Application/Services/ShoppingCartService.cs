@@ -8,11 +8,7 @@ using OrderAggregate = Ballcom.Order.Domain.Domain.Order;
 
 namespace Ballcom.Order.Application.Services
 {
-    public class ShoppingCartService(
-        IShoppingCartRepository shoppingCartRepository,
-        IOrderWriteRepository writeRepository,
-        IPublishEndpoint endpoint
-        )
+    public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
     {
         public async Task<Guid> CreateCart(Guid customerId)
         {

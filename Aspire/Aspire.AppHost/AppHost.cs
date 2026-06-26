@@ -71,7 +71,10 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
     .WithReference(sqlPaymentEventStore)
     .WithReference(sqlPaymentRead)
     .WithReference(rabbitmq)
-    .WithReference(migration);
+    .WithReference(migration)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
 
 var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
     .WithReference(sqlOrderWrite)

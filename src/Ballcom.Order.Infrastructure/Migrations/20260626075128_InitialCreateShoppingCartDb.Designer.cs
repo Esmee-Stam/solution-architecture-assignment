@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ballcom.Order.Infrastructure.Migrations
 {
     [DbContext(typeof(ShoppingCartDbContext))]
-    [Migration("20260625194949_InitialCreateShoppingCartDb")]
+    [Migration("20260626075128_InitialCreateShoppingCartDb")]
     partial class InitialCreateShoppingCartDb
     {
         /// <inheritdoc />
@@ -79,6 +79,32 @@ namespace Ballcom.Order.Infrastructure.Migrations
                         .WithMany("CartItems")
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.OwnsOne("Ballcom.Order.Domain.ValueObjects.Money", "Price", b1 =>
+                        {
+                            b1.Property<Guid>("CartItemId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("PriceAmount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)")
+                                .HasColumnName("PriceCurrency");
+
+                            b1.HasKey("CartItemId");
+
+                            b1.ToTable("CartItems");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CartItemId");
+                        });
+
+                    b.Navigation("Price")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Ballcom.Order.Domain.Domain.ShoppingCart", b =>

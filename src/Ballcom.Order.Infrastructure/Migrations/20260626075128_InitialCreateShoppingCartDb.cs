@@ -33,6 +33,8 @@ namespace Ballcom.Order.Infrastructure.Migrations
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    PriceAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceCurrency = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     ShoppingCartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>

@@ -2,6 +2,6 @@ namespace Ballcom.Order.Domain.ValueObjects;
 
 public enum PaymentMethod
 {
-    DirectPay = 0,
-    AfterPay = 1
+    ForwardPay = 1,
+    AfterPay = 2
 }

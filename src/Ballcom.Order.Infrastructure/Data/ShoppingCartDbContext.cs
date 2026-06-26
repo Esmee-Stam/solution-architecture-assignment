@@ -44,6 +44,15 @@ public class ShoppingCartDbContext(DbContextOptions<ShoppingCartDbContext> optio
             item.Property(x => x.ProductId).IsRequired();
             item.Property(x => x.ProductName).HasMaxLength(200).IsRequired();
             item.Property(x => x.Quantity).IsRequired();
+
+            item.OwnsOne(x => x.Price, p =>
+            {
+                p.Property(x => x.Amount).HasColumnName("PriceAmount")
+                .HasColumnType("decimal(18,2)")
+                .IsRequired();
+
+                p.Property(x => x.Currency).HasColumnName("PriceCurrency").HasMaxLength(3).IsRequired();
+            });
         });
     }
 }

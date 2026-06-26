@@ -60,12 +60,25 @@ public class ShoppingCartsController(
         return NoContent();
     }
 
-    // Deze aanpassen
     [HttpPost("checkout")]
-    public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutCartModel model, CancellationToken cancellationToken)
+    public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutCartModel model)
     {
-        //var result = await checkoutCartHandler.Handle(new CheckoutCartCommand(model.CustomerId, model.PaymentMethod), cancellationToken);
-        //return Ok(result);
-        return Ok();
+        try
+        {
+            var customerId = GetCustomerId();
+
+            Guid orderId = await shoppingCartService.CheckoutAsync(customerId, model.PaymentMethod);
+
+            return Ok(new
+            {
+                OrderId = orderId,
+                Message = "Checkout completed successfully."
+            });
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

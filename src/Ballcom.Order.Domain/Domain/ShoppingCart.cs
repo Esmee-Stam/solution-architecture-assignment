@@ -25,7 +25,16 @@ public class ShoppingCart
 
     public byte[] RowVersion { get; set; }
 
-    public void AddProduct(Guid productId, string productName, int quantity)
+    public Money TotalCartPrice
+    {
+        get
+        {
+            var currency = _cartItems.FirstOrDefault()?.Price.Currency ?? "EUR";
+            return _cartItems.Aggregate(new Money(0, currency), (current, item) => current + item.TotalPrice);
+        }
+    }
+
+    public void AddProduct(Guid productId, string productName, int quantity, decimal amount, string currency)
     {
         if (quantity <= 0) throw new DomainException("Quantity must be greater than zero.");
 
@@ -48,7 +57,8 @@ public class ShoppingCart
                     Guid.NewGuid(),
                     productId,
                     productName,
-                    quantity));
+                    quantity,
+                    new Money(amount, currency)));
             return;
         }
 
@@ -66,6 +76,28 @@ public class ShoppingCart
     public void Clear()
     {
         _cartItems.Clear();
+    }
+
+    public Order Checkout(Guid orderId, PaymentMethod paymentMethod)
+    {
+        if (!_cartItems.Any()) throw new DomainException("A shopping cart must contain at least one item before checkout.");
+
+        var order = new Order(orderId, CustomerId, paymentMethod);
+
+        foreach(var item in _cartItems)
+        {
+            //order.AddItem(new OrderItem(
+            //    item.ProductId,
+            //    item.ProductName,
+            //    item.Quantity,
+            //    //item.Price.Amount,
+            //    //item.Price.Currency
+            //));
+        }
+
+        Clear();
+
+        return order;
     }
 
     //public Guid Id { get; private set; }

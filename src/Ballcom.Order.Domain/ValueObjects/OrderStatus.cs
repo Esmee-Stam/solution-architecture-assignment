@@ -4,7 +4,9 @@ public enum OrderStatus
 {
     Draft = 0,
     Confirmed = 1,
-    Packed = 2,
-    Shipped = 3,
-    Cancelled = 4
+    Paid = 2,
+    Picking = 3,
+    Packed = 4,
+    Shipped = 5,
+    Cancelled = 6
 }

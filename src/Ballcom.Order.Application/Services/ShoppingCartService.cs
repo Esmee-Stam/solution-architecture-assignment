@@ -4,11 +4,15 @@ using Ballcom.Order.Domain.Domain;
 using Ballcom.Order.Domain.ValueObjects;
 using Events.OrderEvents;
 using MassTransit;
-using MassTransit.Transports;
+using OrderAggregate = Ballcom.Order.Domain.Domain.Order;
 
 namespace Ballcom.Order.Application.Services
 {
-    public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IPublishEndpoint endpoint)
+    public class ShoppingCartService(
+        IShoppingCartRepository shoppingCartRepository,
+        IOrderWriteRepository writeRepository,
+        IPublishEndpoint endpoint
+        )
     {
         public async Task<Guid> CreateCart(Guid customerId)
         {
@@ -79,35 +83,6 @@ namespace Ballcom.Order.Application.Services
         {
             var cart = await shoppingCartRepository.GetShoppingCartByCustomerIdAsync(customerId);
             return cart is null ? null : ShoppingCartDto.FromDomain(cart);
-        }
-
-        public async Task<Guid> CheckoutAsync(Guid customerId, PaymentMethod paymentMethod)
-        {
-            var cart = await shoppingCartRepository.GetShoppingCartByCustomerIdAsync(customerId);
-
-            if (cart is null || !cart.CartItems.Any()) throw new Exception("Shopping cart is empty or does not exist");
-
-            var totalAmount = cart.TotalCartPrice.Amount;
-            var currency = cart.TotalCartPrice.Currency;
-
-            var orderId = Guid.NewGuid();
-
-            //// add order here
-            ///
-
-            _ = cart.Checkout(orderId, paymentMethod);
-
-            await shoppingCartRepository.SaveChangesAsync();
-
-            await endpoint.Publish(new OrderPlacedEvent(
-                orderId,
-                customerId,
-                paymentMethod.ToString(), 
-                totalAmount,
-                currency
-            ));
-
-            return orderId;
         }
     }
 }

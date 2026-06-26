@@ -1,4 +1,6 @@
+using Ballcom.Order.Application.Commands.PlaceOrder;
 using Ballcom.Order.Application.DTOs;
+using Ballcom.Order.Application.Orders.Commands;
 using Ballcom.Order.Application.Services;
 using Ballcom.Order.Domain.ValueObjects;
 using Ballcom.Order.WebApi.Models;
@@ -12,7 +14,8 @@ namespace Ballcom.Order.WebApi.Controllers;
 [Route("api/shopping-carts")]
 [Authorize(Roles = "Customer")]
 public class ShoppingCartsController(
-    ShoppingCartService shoppingCartService
+    ShoppingCartService shoppingCartService,
+    PlaceOrderCommandHandler handler
     ) : ControllerBase
 {
 
@@ -28,17 +31,12 @@ public class ShoppingCartsController(
         return customerId;
     }
 
-    [HttpGet("{customerId:guid}")]
-    public async Task<ActionResult<ShoppingCartDto>> GetByCustomerId(Guid customerId)
+    [HttpGet]
+    public async Task<ActionResult<ShoppingCartDto>> GetByCustomerId()
     {
         var userId = GetCustomerId();
 
-        if (userId != customerId)
-        {
-            return Forbid();
-        }
-
-        var cart = await shoppingCartService.GetByCustomerId(customerId);
+        var cart = await shoppingCartService.GetByCustomerId(userId);
 
         if (cart is null) return NotFound();
 
@@ -67,7 +65,9 @@ public class ShoppingCartsController(
         {
             var customerId = GetCustomerId();
 
-            Guid orderId = await shoppingCartService.CheckoutAsync(customerId, model.PaymentMethod);
+            var command = new PlaceOrderCommand(customerId, model.PaymentMethod);
+
+            Guid orderId = await handler.Handle(command);
 
             return Ok(new
             {

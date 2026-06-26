@@ -1,9 +1,6 @@
 ﻿using Ballcom.Payment.Application.Commands.RequestPayment;
 using Events.OrderEvents;
 using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Ballcom.Payment.Infrastructure.Messaging
 {
@@ -22,8 +19,6 @@ namespace Ballcom.Payment.Infrastructure.Messaging
             );
 
             var result = await requestPaymentHandler.Handle(command, CancellationToken.None);
-
-            Console.WriteLine($"Payment requested for OrderId: {message.OrderId}, PaymentId: {result.PaymentId}");
         }
     }
 }

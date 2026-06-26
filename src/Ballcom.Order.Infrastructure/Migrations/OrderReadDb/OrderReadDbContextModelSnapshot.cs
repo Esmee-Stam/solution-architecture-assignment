@@ -22,10 +22,36 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderReadDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.Models.OrderItemReadModel", b =>
+            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderDto", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderItemDto", b =>
+                {
+                    b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrderId")
@@ -36,51 +62,35 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderReadDb
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
-            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.Models.OrderReadModel", b =>
+            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderItemDto", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.Models.OrderItemReadModel", b =>
-                {
-                    b.HasOne("Ballcom.Order.Infrastructure.Data.Read.Models.OrderReadModel", null)
+                    b.HasOne("Ballcom.Order.Application.DTOs.OrderDto", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.Models.OrderReadModel", b =>
+            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderDto", b =>
                 {
                     b.Navigation("OrderItems");
                 });

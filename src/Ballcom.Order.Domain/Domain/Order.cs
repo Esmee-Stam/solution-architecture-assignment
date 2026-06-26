@@ -5,114 +5,124 @@ namespace Ballcom.Order.Domain.Domain;
 
 public class Order
 {
-    public Guid Id { get; private set; }
-    public Guid CustomerId { get; private set; }
-    public List<OrderItem> OrderItems { get; private set; }
-    public OrderStatus Status { get; private set; }
-    public PaymentMethod PaymentMethod { get; private set; }
-    public DateTime CreatedAt { get; private set; }
+    private readonly List<OrderItem> _orderItems = new();
 
-    private Order()
-    {
-        OrderItems = [];
-    }
+    private Order() { }
 
     public Order(Guid id, Guid customerId, PaymentMethod paymentMethod)
     {
-        if (id == Guid.Empty) throw new ArgumentException("Order id is required.", nameof(id));
-        if (customerId == Guid.Empty) throw new ArgumentException("Customer id is required.", nameof(customerId));
+        if (customerId == Guid.Empty) throw new ArgumentException("CustomerId cannot be empty.", nameof(customerId));
 
         Id = id;
         CustomerId = customerId;
-        PaymentMethod = paymentMethod;
         Status = OrderStatus.Draft;
         CreatedAt = DateTime.UtcNow;
-        OrderItems = [];
     }
 
-    private Order(Guid id, Guid customerId, PaymentMethod paymentMethod, OrderStatus status, DateTime createdAt, List<OrderItem> orderItems)
+    public Guid Id { get; private set; }
+
+    public Guid CustomerId { get; private set; }
+    public PaymentMethod PaymentMethod { get; set; }
+
+    public OrderStatus Status { get; private set; }
+
+    public DateTime CreatedAt { get; private set; }
+    public byte[] RowVersion { get; private set; }
+
+    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
+
+    public Money TotalPrice
     {
-        Id = id;
-        CustomerId = customerId;
-        PaymentMethod = paymentMethod;
-        Status = status;
-        CreatedAt = createdAt;
-        OrderItems = orderItems;
-    }
-
-    public static Order Rehydrate(Guid id, Guid customerId, PaymentMethod paymentMethod, OrderStatus status, DateTime createdAt, IEnumerable<OrderItem> items)
-    {
-        return new Order(id, customerId, paymentMethod, status, createdAt, items.ToList());
-    }
-
-    public void AddItem(OrderItem item)
-    {
-        EnsureCanEdit();
-        if (item is null) throw new ArgumentNullException(nameof(item));
-
-        var existing = OrderItems.FirstOrDefault(x => x.ProductId == item.ProductId);
-
-        if (existing is null)
+        get
         {
-            if (OrderItems.Count >= 20)
-                throw new DomainException("An order can contain a maximum of 20 different items.");
+            if (_orderItems.Any()) return new Money(0m, "EUR");
 
-            OrderItems.Add(item);
-            return;
+            return _orderItems.Select(x => x.TotalPrice).Aggregate((total, next) => total + next);
         }
-
-        existing.IncreaseQuantity(item.Quantity);
-    }
-
-    public void RemoveItem(Guid productId)
-    {
-        EnsureCanEdit();
-
-        var existing = OrderItems.FirstOrDefault(x => x.ProductId == productId);
-        if (existing is null)
-            return;
-
-        OrderItems.Remove(existing);
-    }
-
-    public void Confirm()
-    {
-        if (!OrderItems.Any())
-            throw new DomainException("An order must contain at least one item.");
-
-        if (Status != OrderStatus.Draft)
-            throw new DomainException("Only a draft order can be confirmed.");
-
-        Status = OrderStatus.Confirmed;
-    }
-
-    public void MarkPacked()
-    {
-        if (Status != OrderStatus.Confirmed)
-            throw new DomainException("Only a confirmed order can be packed.");
-
-        Status = OrderStatus.Packed;
-    }
-
-    public void MarkShipped()
-    {
-        if (Status != OrderStatus.Packed)
-            throw new DomainException("Only a packed order can be shipped.");
-
-        Status = OrderStatus.Shipped;
-    }
-
-    public void Cancel()
-    {
-        if (Status == OrderStatus.Shipped)
-            throw new DomainException("A shipped order cannot be cancelled.");
-
-        Status = OrderStatus.Cancelled;
     }
 
     private void EnsureCanEdit()
     {
         if (Status != OrderStatus.Draft)
             throw new DomainException("Only a draft order can be edited.");
+    }
+
+    public void AddItem(
+        Guid productId,
+        string productName,
+        Money unitPrice,
+        int quantity)
+    {
+        EnsureCanEdit();
+
+
+        var existing = _orderItems.FirstOrDefault(x => x.ProductId == productId);
+
+        if (existing is null)
+        {
+            if (_orderItems.Count >= 20) throw new DomainException("An order can contain a maximum of 20 different items.");
+
+            _orderItems.Add(new OrderItem(Guid.NewGuid(), productId, productName, unitPrice, quantity));
+
+            return;
+        }
+
+        existing.IncreaseQuantity(quantity);
+
+    }
+
+    public void RemoveItem(Guid productId)
+    {
+        EnsureCanEdit();
+
+        var item = _orderItems.FirstOrDefault(x => x.ProductId == productId);
+
+        if (item is null) return;
+
+        _orderItems.Remove(item);
+    }
+
+    public void Confirm()
+    {
+        if (!OrderItems.Any()) throw new DomainException("An order must contain at least one item.");
+
+        if (Status != OrderStatus.Draft) throw new DomainException("Only a draft order can be confirmed.");
+
+        Status = OrderStatus.Confirmed;
+    }
+
+    public void MarkAsPaid()
+    {
+        if (Status != OrderStatus.Confirmed) throw new DomainException("Only a confirmed order can be marked as paid.");
+
+        Status = OrderStatus.Paid;
+    }
+
+    public void StartPicking()
+    {
+        if (Status != OrderStatus.Paid) throw new DomainException("Only a paid order can be marked as picking.");
+
+        Status = OrderStatus.Picking;
+    }
+
+    public void MarkPacked()
+    {
+        if (Status != OrderStatus.Confirmed) throw new DomainException("Only a confirmed order can be packed.");
+
+        Status = OrderStatus.Packed;
+    }
+
+    public void MarkShipped()
+    {
+        if (Status != OrderStatus.Packed) throw new DomainException("Only a packed order can be shipped.");
+
+        Status = OrderStatus.Shipped;
+    }
+
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped) throw new DomainException("A shipped order cannot be cancelled.");
+
+        Status = OrderStatus.Cancelled;
     }
 }

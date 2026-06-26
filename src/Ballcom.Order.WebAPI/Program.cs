@@ -1,4 +1,5 @@
 using Ballcom.Order.Application.Commands.CheckoutCart;
+using Ballcom.Order.Application.Commands.PlaceOrder;
 using Ballcom.Order.Application.Commands.RemoveCartItem;
 using Ballcom.Order.Application.Interfaces;
 using Ballcom.Order.Application.Queries.GetOrderById;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
 builder.Services.AddScoped<ShoppingCartService>();
 
+builder.Services.AddScoped<PlaceOrderCommandHandler>();
 builder.Services.AddScoped<RemoveCartItemHandler>();
 builder.Services.AddScoped<CheckoutCartHandler>();
 builder.Services.AddScoped<GetOrderByIdHandler>();
@@ -50,6 +52,8 @@ builder.Services.AddScoped<GetOrdersByCustomerIdHandler>();
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumer<ProductAddedToCartConsumer>();
+    options.AddConsumer<PaymentCompletedConsumer>();
+    options.AddConsumer<OrderStatusChangedConsumer>();
    
     options.UsingRabbitMq((context, cfg) =>
     {

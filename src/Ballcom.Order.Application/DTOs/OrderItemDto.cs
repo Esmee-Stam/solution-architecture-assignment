@@ -1,8 +1,15 @@
 using Ballcom.Order.Domain.Domain;
 
-namespace Ballcom.Order.Application.DTOs;
-
-public record OrderItemDto(Guid ProductId, string ProductName, int Quantity)
+namespace Ballcom.Order.Application.DTOs
 {
-    public static OrderItemDto FromDomain(OrderItem item) => new(item.ProductId, item.ProductName, item.Quantity);
+   public class OrderItemDto
+    {
+        public Guid Id { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal TotalPrice { get; set; }
+    }
 }

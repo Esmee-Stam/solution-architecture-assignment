@@ -2,10 +2,18 @@ using Ballcom.Order.Domain.Domain;
 using Ballcom.Order.Domain.ValueObjects;
 using OrderAggregate = Ballcom.Order.Domain.Domain.Order;
 
-namespace Ballcom.Order.Application.DTOs;
-
-public record OrderDto(Guid Id, Guid CustomerId, OrderStatus Status, PaymentMethod PaymentMethod, IReadOnlyCollection<OrderItemDto> OrderItems, DateTime CreatedAt)
+namespace Ballcom.Order.Application.DTOs
 {
-    public static OrderDto FromDomain(OrderAggregate order)
-        => new(order.Id, order.CustomerId, order.Status, order.PaymentMethod, order.OrderItems.Select(OrderItemDto.FromDomain).ToList(), order.CreatedAt);
+    public class OrderDto
+    {
+        public Guid Id { get; set; }
+        public Guid CustomerId { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public decimal TotalAmount { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        // De geneste collectie van platte item DTO's
+        public List<OrderItemDto> OrderItems { get; set; } = new();
+    }
 }

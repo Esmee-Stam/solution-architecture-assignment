@@ -37,12 +37,18 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderWriteDb
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Ballcom.Order.Domain.Domain.Order", b =>
@@ -71,10 +77,35 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderWriteDb
 
                             b1.HasIndex("OrderId");
 
-                            b1.ToTable("OrderItem");
+                            b1.ToTable("OrderItems", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
+
+                            b1.OwnsOne("Ballcom.Order.Domain.ValueObjects.Money", "UnitPrice", b2 =>
+                                {
+                                    b2.Property<Guid>("OrderItemId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<decimal>("Amount")
+                                        .HasColumnType("decimal(18,2)")
+                                        .HasColumnName("PriceAmount");
+
+                                    b2.Property<string>("Currency")
+                                        .IsRequired()
+                                        .HasColumnType("nvarchar(3)")
+                                        .HasColumnName("PriceCurrency");
+
+                                    b2.HasKey("OrderItemId");
+
+                                    b2.ToTable("OrderItems");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("OrderItemId");
+                                });
+
+                            b1.Navigation("UnitPrice")
+                                .IsRequired();
                         });
 
                     b.Navigation("OrderItems");

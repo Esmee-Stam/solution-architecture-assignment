@@ -23,9 +23,13 @@ public class GetOrderByIdHandler(IOrderReadRepository readRepository)
             CreatedAt = order.CreatedAt,
             OrderItems = order.OrderItems.Select(oi => new OrderItemDto
             {
+                Id = oi.Id,
+                OrderId = oi.OrderId,
                 ProductId = oi.ProductId,
                 ProductName = oi.ProductName,
-                Quantity = oi.Quantity
+                Quantity = oi.Quantity,
+                UnitPrice = oi.UnitPrice,
+                TotalPrice = oi.TotalPrice
             }).ToList()
         };
     }

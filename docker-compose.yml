@@ -40,16 +40,15 @@ services:
       condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__sql-shopping-cart: "Server=sql-server;Database=ShoppingCartDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-payment-read: "Server=sql-server;Database=PaymentReadDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-payment-eventstore: "Server=sql-server;Database=PaymentEventStoreDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-order-write: "Server=sql-server;Database=OrderWriteDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__sql-customer-service: "Server=sql-server;Database=CustomerServiceDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
-    restart: on-failure
+      ConnectionStrings__sql-shopping-cart: "Server=sql-server;Database=ShoppingCartDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-read: "Server=sql-server;Database=PaymentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-eventstore: "Server=sql-server;Database=PaymentEventStoreDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-write: "Server=sql-server;Database=OrderWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-customer-service: "Server=sql-server;Database=CustomerServiceDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
 
   import-service:
     build:
@@ -71,13 +70,12 @@ services:
     depends_on:
       sql-server:
         condition: service_healthy
-      migration-service:
-        condition: service_completed_successfully
     ports:
       - "7238:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password={SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       JWT__Secret: ${JWT_SECRET}
       JWT__Issuer: ${JWT_ISSUER}
       JWT__Audience: ${JWT_AUDIENCE}

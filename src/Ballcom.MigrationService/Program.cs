@@ -1,11 +1,14 @@
 using Ballcom.CustomerService.Infrastructure.Data;
 using Ballcom.Identity.Infrastructure.Data;
 using Ballcom.MigrationService;
+using Ballcom.Order.Infrastructure.Data.Read;
+using Ballcom.Order.Infrastructure.Data.Write;
 using Ballcom.ProductCatalog.Infrastructure.Data.Read;
 using Ballcom.ProductCatalog.Infrastructure.Data.Write;
 using Microsoft.EntityFrameworkCore;
 using Ballcom.Payment.Infrastructure.Data.EventStore;
 using Ballcom.Payment.Infrastructure.Data.Read;
+using Ballcom.Order.Infrastructure.Data;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -40,6 +43,22 @@ builder.Services.AddDbContext<PaymentReadDbContext>(options =>
 builder.Services.AddDbContext<CustomerDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-customer-service"));
+});
+
+builder.Services.AddDbContext<OrderWriteDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-write"));
+});
+
+builder.Services.AddDbContext<ShoppingCartDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-shopping-cart"));
+});
+
+
+builder.Services.AddDbContext<OrderReadDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sql-order-read"));
 });
 
 var host = builder.Build();

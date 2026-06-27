@@ -39,10 +39,12 @@ namespace Ballcom.Order.Application.Commands.PlaceOrder
                         item.Quantity);
 
                     return new OrderItemEventDto(
+                        item.Id,
                         item.ProductId,
                         item.ProductName,
                         item.Quantity,
-                        item.Price.Amount
+                        item.Price.Amount,
+                        item.Price.Currency
                     );
                 })
                 .ToList();

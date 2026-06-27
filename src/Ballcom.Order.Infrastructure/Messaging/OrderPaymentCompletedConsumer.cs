@@ -28,10 +28,12 @@ namespace Ballcom.Order.Infrastructure.Messaging
                     order.TotalPrice.Currency,
                     order.PaymentMethod.ToString(),
                     order.OrderItems.Select(i => new OrderItemEventDto(
+                        i.Id,
                         i.ProductId,
                         i.ProductName,
                         i.Quantity,
-                        i.UnitPrice.Amount
+                        i.UnitPrice.Amount,
+                        i.UnitPrice.Currency
                     )).ToList(),
                     DateTime.UtcNow
                 ));

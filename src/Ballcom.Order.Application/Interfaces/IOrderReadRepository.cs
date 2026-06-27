@@ -7,6 +7,6 @@ public interface IOrderReadRepository
 {
     Task<OrderDto?> GetByIdAsync(Guid orderId);
     Task<IEnumerable<OrderDto>> GetOrderByCustomerIdAsync(Guid customerId);
-  
-    Task<IReadOnlyCollection<OrderAggregate>> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default);
-}
+
+    Task UpsertAsync(OrderDto order);
+  }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ballcom.Order.Infrastructure.Migrations.OrderReadDb
 {
     [DbContext(typeof(OrderReadDbContext))]
-    [Migration("20260626113816_InitialCreateOrderReadDb")]
-    partial class InitialCreateOrderReadDb
+    [Migration("20260627092519_CreateOrderReadDB")]
+    partial class CreateOrderReadDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,37 +25,15 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderReadDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderDto", b =>
+            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.OrderItemReadModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PaymentMethod")
+                    b.Property<string>("Currency")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders", (string)null);
-                });
-
-            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderItemDto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
@@ -84,16 +62,52 @@ namespace Ballcom.Order.Infrastructure.Migrations.OrderReadDb
                     b.ToTable("OrderItems", (string)null);
                 });
 
-            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderItemDto", b =>
+            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.OrderReadModel", b =>
                 {
-                    b.HasOne("Ballcom.Order.Application.DTOs.OrderDto", null)
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.OrderItemReadModel", b =>
+                {
+                    b.HasOne("Ballcom.Order.Infrastructure.Data.Read.OrderReadModel", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Ballcom.Order.Application.DTOs.OrderDto", b =>
+            modelBuilder.Entity("Ballcom.Order.Infrastructure.Data.Read.OrderReadModel", b =>
                 {
                     b.Navigation("OrderItems");
                 });

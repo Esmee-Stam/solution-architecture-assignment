@@ -1,19 +1,18 @@
 ﻿using Ballcom.Order.Application.DTOs;
-using Ballcom.Order.Infrastructure.Data.Read;
+using Ballcom.Order.Application.Interfaces;
 using Events.OrderEvents;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ballcom.Order.Infrastructure.Messaging
 {
-    public class OrderPlacedConsumer(OrderReadDbContext db) : IConsumer<OrderPlacedEvent>
+    public class OrderPlacedConsumer(IOrderReadRepository repository) : IConsumer<OrderPlacedEvent>
     {
         public async Task Consume(ConsumeContext<OrderPlacedEvent> context)
         {
             var message = context.Message;
 
-            var exists = await db.Orders.AnyAsync(x => x.Id == message.OrderId);
-            if (exists) return;
+            var exists = await repository.GetByIdAsync(message.OrderId);
+            if (exists is not null) return;
 
             var order = new OrderDto
             {
@@ -35,8 +34,7 @@ namespace Ballcom.Order.Infrastructure.Messaging
                 }).ToList()
             };
 
-            await db.Orders.AddAsync(order);
-            await db.SaveChangesAsync();
+            await repository.UpsertAsync(order);
         }
     }
 }

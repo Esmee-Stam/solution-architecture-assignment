@@ -20,30 +20,13 @@ public class OrderReadRepository(OrderReadDbContext context) : IOrderReadReposit
 
     public async Task<IEnumerable<OrderDto>> GetOrderByCustomerIdAsync(Guid customerId)
     {
-        var orders = await context.Orders.Include(x => x.OrderItems)
-            .Where(x => x.CustomerId == customerId)
+        var orders = await context.Orders
             .AsNoTracking()
-              .Select(o => new OrderDto
-              {
-                  Id = o.Id,
-                  CustomerId = o.CustomerId,
-                  PaymentMethod = o.PaymentMethod,
-                  Status = o.Status,
-                  TotalAmount = o.TotalAmount,
-                  CreatedAt = o.CreatedAt,
-
-                  OrderItems = o.OrderItems.Select(i => new OrderItemDto
-                  {
-                      ProductId = i.ProductId,
-                      ProductName = i.ProductName,
-                      Quantity = i.Quantity,
-                      UnitPrice = i.UnitPrice,
-                      TotalPrice = i.TotalPrice
-                  }).ToList()
-              })
+            .Include(o => o.OrderItems)
+            .Where(o => o.CustomerId == customerId)
             .ToListAsync();
 
-        return orders;
+        return orders.Select(ToDto);
     }
 
     public async Task UpsertAsync(OrderDto order)

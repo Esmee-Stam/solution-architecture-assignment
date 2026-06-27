@@ -64,6 +64,10 @@ public class OrderReadDbContext(DbContextOptions<OrderReadDbContext> options) : 
                   .HasColumnType("decimal(18,2)")
                   .IsRequired();
 
+            entity.Property(x => x.Currency)
+                  .HasMaxLength(3)
+                  .IsRequired();
+
             entity.Property(x => x.Quantity).IsRequired();                    
         });
     }

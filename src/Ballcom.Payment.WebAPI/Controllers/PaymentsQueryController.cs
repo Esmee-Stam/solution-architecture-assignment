@@ -1,12 +1,15 @@
 ﻿using Ballcom.Payment.Application.Queries.GetPaymentById;
 using Ballcom.Payment.Application.Queries.GetPaymentByOrderId;
 using Ballcom.Payment.Application.Queries.GetPaymentEvents;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ballcom.Payment.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/payments")]
+[Authorize(Roles = "Customer")]
+
 public class PaymentsQueryController(
     GetPaymentByIdHandler getPaymentByIdHandler,
     GetPaymentByOrderIdHandler getPaymentByOrderIdHandler,

@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.AddDefaultAuthentication();
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PaymentEventStoreDbContext>(options =>
@@ -44,6 +46,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<PaymentRequestedConsumer>();
     x.AddConsumer<PaymentCompletedConsumer>();
     x.AddConsumer<PaymentFailedConsumer>();
+    x.AddConsumer<OrderPlacedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -67,6 +70,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 

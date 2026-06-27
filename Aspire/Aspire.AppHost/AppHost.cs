@@ -20,7 +20,9 @@ var sqlProductCatalogRead = builder.AddConnectionString("sql-product-catalog-rea
 var sqlPaymentEventStore = builder.AddConnectionString("sql-payment-eventstore");
 var sqlPaymentRead = builder.AddConnectionString("sql-payment-read");
 var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
-
+var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
+var sqlOrderRead = builder.AddConnectionString("sql-order-read");
+var sqlShoppingCart= builder.AddConnectionString("sql-shopping-cart");
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
@@ -29,12 +31,20 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlPaymentEventStore)
     .WithReference(sqlPaymentRead)
     .WithReference(sqlCustomerService)
+    .WithReference(sqlOrderWrite)
+    .WithReference(sqlOrderRead)
+    .WithReference(sqlShoppingCart)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
     .WaitFor(sqlPaymentEventStore)
     .WaitFor(sqlPaymentRead)
-    .WaitFor(sqlCustomerService);
+    .WaitFor(sqlCustomerService)
+    .WaitFor(sqlCustomerService)
+    .WaitFor(sqlProductCatalogRead)
+    .WaitFor(sqlShoppingCart)
+    .WaitFor(sqlOrderWrite)
+    .WaitFor(sqlOrderRead);
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
@@ -61,7 +71,19 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
     .WithReference(sqlPaymentEventStore)
     .WithReference(sqlPaymentRead)
     .WithReference(rabbitmq)
-    .WithReference(migration);
+    .WithReference(migration)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
+
+var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
+    .WithReference(sqlOrderWrite)
+    .WithReference(sqlOrderRead)
+    .WithReference(sqlShoppingCart)
+    .WithReference(rabbitmq)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
 
 var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_WebAPI>("customerservice-api")
     .WithReference(sqlCustomerService)

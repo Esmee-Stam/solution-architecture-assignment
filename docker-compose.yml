@@ -80,6 +80,25 @@ services:
       JWT__Issuer: ${JWT_ISSUER}
       JWT__Audience: ${JWT_AUDIENCE}
     restart: on-failure
+
+  product-catalog-api: 
+    build: 
+      context: .
+      dockerfile: src/Ballcom.ProductCatalog.WebAPI/Dockerfile
+    depends_on: 
+      sql-server:
+        condition: service_healthy
+    ports:
+      -  "7190:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
   
 volumes:
   sql-server-data:

@@ -95,10 +95,10 @@ var customerServiceApi = builder.AddProject<Projects.Ballcom_CustomerService_Web
     .WithEnvironment("JWT__Audience", jwtAudience);
 
 // Import Service
-//var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
-//    .WithReference(rabbitmq)
-//    .WaitFor(rabbitmq)
-//    .WaitFor(migration)
-//    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
+var importService = builder.AddProject<Projects.Ballcom_ImportService>("import-service")
+    .WithReference(rabbitmq)
+    .WaitFor(rabbitmq)
+    .WaitFor(migration)
+    .WithEnvironment("CsvImport__Url", builder.Configuration["CsvImport:Url"]);
 
 builder.Build().Run();

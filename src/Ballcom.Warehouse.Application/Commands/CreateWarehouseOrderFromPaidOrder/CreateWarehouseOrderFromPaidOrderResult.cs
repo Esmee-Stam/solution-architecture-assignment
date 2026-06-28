@@ -1,0 +1,3 @@
+namespace Ballcom.Warehouse.Application.Commands.CreateWarehouseOrderFromPaidOrder;
+
+public record CreateWarehouseOrderFromPaidOrderResult(Guid WarehouseOrderId);

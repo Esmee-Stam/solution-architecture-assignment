@@ -58,7 +58,10 @@ builder.Services.AddMassTransit(options =>
    
     options.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+        var rabbitMqConnectionString = builder.Configuration.GetConnectionString("messaging")
+            ?? "amqp://guest:guest@localhost:5672/";
+
+        cfg.Host(new Uri(rabbitMqConnectionString));
 
         cfg.ConfigureEndpoints(context);
 

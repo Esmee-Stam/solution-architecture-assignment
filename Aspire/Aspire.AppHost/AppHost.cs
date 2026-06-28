@@ -23,6 +23,8 @@ var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
 var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
 var sqlOrderRead = builder.AddConnectionString("sql-order-read");
 var sqlShoppingCart= builder.AddConnectionString("sql-shopping-cart");
+var sqlWarehouseWrite = builder.AddConnectionString("sql-warehouse-write");
+var sqlWarehouseRead = builder.AddConnectionString("sql-warehouse-read");
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
@@ -34,6 +36,8 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
     .WithReference(sqlShoppingCart)
+    .WithReference(sqlWarehouseWrite)
+    .WithReference(sqlWarehouseRead)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
@@ -44,7 +48,9 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WaitFor(sqlProductCatalogRead)
     .WaitFor(sqlShoppingCart)
     .WaitFor(sqlOrderWrite)
-    .WaitFor(sqlOrderRead);
+    .WaitFor(sqlOrderRead)
+    .WaitFor(sqlWarehouseWrite)
+    .WaitFor(sqlWarehouseRead);
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
@@ -76,11 +82,22 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("ballcom-order-webapi")
+var orderApi = builder.AddProject<Projects.Ballcom_Order_WebApi>("ballcom-order-webapi")
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
     .WithReference(sqlShoppingCart)
     .WithReference(rabbitmq)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
+
+
+var warehouseApi = builder.AddProject<Projects.Ballcom_Warehouse_WebAPI>("warehouse-api")
+    .WithReference(sqlWarehouseWrite)
+    .WithReference(sqlWarehouseRead)
+    .WithReference(rabbitmq)
+    .WithReference(migration)
+    .WaitFor(migration)
     .WithEnvironment("JWT__Secret", jwtSecret)
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);

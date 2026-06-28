@@ -43,6 +43,8 @@ builder.Services.AddScoped<GetPaymentEventsHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("payment", false));
+
     x.AddConsumer<PaymentRequestedConsumer>();
     x.AddConsumer<PaymentCompletedConsumer>();
     x.AddConsumer<PaymentFailedConsumer>();

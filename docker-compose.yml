@@ -125,7 +125,27 @@ services:
       JWT__Issuer: ${JWT_ISSUER}
       JWT__Audience: ${JWT_AUDIENCE}
     restart: on-failure
-  
+
+  payment-api: 
+    build:
+      context: .
+      dockerfile: src/Ballcom.Payment.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports: 
+      - "7048:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-payment-read: "Server=sql-server;Database=PaymentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-eventstore: "Server=sql-server;Database=PaymentEventStoreDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+
 volumes:
   sql-server-data:
   rabbitmq-data:

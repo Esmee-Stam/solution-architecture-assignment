@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ballcom.CustomerService.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreateCustomerDb : Migration
+    public partial class InitialCreateCustomerServiceDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

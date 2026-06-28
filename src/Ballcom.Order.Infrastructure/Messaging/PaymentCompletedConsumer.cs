@@ -6,7 +6,7 @@ using MassTransit;
 
 namespace Ballcom.Order.Infrastructure.Messaging
 {
-    public class OrderPaymentCompletedConsumer(IOrderWriteRepository orderWriteRepository, IPublishEndpoint endpoint) : IConsumer<PaymentCompletedEvent>
+    public class PaymentCompletedConsumer(IOrderWriteRepository orderWriteRepository, IPublishEndpoint endpoint) : IConsumer<PaymentCompletedEvent>
     {
         public async Task Consume(ConsumeContext<PaymentCompletedEvent> context)
         {
@@ -23,7 +23,7 @@ namespace Ballcom.Order.Infrastructure.Messaging
             await endpoint.Publish(new OrderStatusChangedEvent(
                     order.Id,
                     order.CustomerId,
-                    "Paid",
+                    order.Status.ToString(),
                     order.TotalPrice.Amount,
                     order.TotalPrice.Currency,
                     order.PaymentMethod.ToString(),
@@ -36,7 +36,7 @@ namespace Ballcom.Order.Infrastructure.Messaging
                         i.UnitPrice.Currency
                     )).ToList(),
                     DateTime.UtcNow
-                ));
+            ));
         }
     }
 }

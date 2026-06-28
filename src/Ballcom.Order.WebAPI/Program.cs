@@ -1,6 +1,4 @@
-using Ballcom.Order.Application.Commands.CheckoutCart;
 using Ballcom.Order.Application.Commands.PlaceOrder;
-using Ballcom.Order.Application.Commands.RemoveCartItem;
 using Ballcom.Order.Application.Interfaces;
 using Ballcom.Order.Application.Queries.GetOrderById;
 using Ballcom.Order.Application.Queries.GetOrdersByCustomerId;
@@ -44,34 +42,23 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<ShoppingCartService>();
 
 builder.Services.AddScoped<PlaceOrderCommandHandler>();
-builder.Services.AddScoped<RemoveCartItemHandler>();
-builder.Services.AddScoped<CheckoutCartHandler>();
 builder.Services.AddScoped<GetOrderByIdHandler>();
 builder.Services.AddScoped<GetOrdersByCustomerIdHandler>();
 
 builder.Services.AddMassTransit(options =>
 {
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("order", false));
+
     options.AddConsumer<ProductAddedToCartConsumer>();
-    options.AddConsumer<OrderPaymentCompletedConsumer>();
+    options.AddConsumer<PaymentCompletedConsumer>();
     options.AddConsumer<OrderStatusChangedConsumer>();
     options.AddConsumer<OrderPlacedConsumer>();
-   
+
     options.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("messaging"));
 
         cfg.ConfigureEndpoints(context);
-
-        cfg.ReceiveEndpoint("order-status", e =>
-        {
-            e.UseMessageRetry(r =>
-            {
-                r.Interval(5, TimeSpan.FromSeconds(2));
-            });
-
-            e.ConfigureConsumer<OrderStatusChangedConsumer>(context);
-
-        });
     });
 });
 

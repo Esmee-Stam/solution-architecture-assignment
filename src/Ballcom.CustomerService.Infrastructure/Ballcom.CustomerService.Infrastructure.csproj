@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MassTransit" Version="9.1.2" />
+    <PackageReference Include="MassTransit" Version="8.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -23,6 +19,10 @@
     <ProjectReference Include="..\Ballcom.CustomerService.Application\Ballcom.CustomerService.Application.csproj" />
     <ProjectReference Include="..\Ballcom.CustomerService.Domain\Ballcom.CustomerService.Domain.csproj" />
     <ProjectReference Include="..\contracts\ProductCreatedEvent\Events.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

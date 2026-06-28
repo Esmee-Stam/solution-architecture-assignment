@@ -17,6 +17,5 @@ namespace Ballcom.CustomerService.Domain.Domain
         public string? Address { get; set; }
 
         public string? IdentityUserId { get; set; }
-
     }
 }

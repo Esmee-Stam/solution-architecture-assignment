@@ -23,6 +23,7 @@ var sqlCustomerService = builder.AddConnectionString("sql-customer-service");
 var sqlOrderWrite = builder.AddConnectionString("sql-order-write");
 var sqlOrderRead = builder.AddConnectionString("sql-order-read");
 var sqlShoppingCart= builder.AddConnectionString("sql-shopping-cart");
+
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)

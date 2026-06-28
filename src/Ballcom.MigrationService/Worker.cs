@@ -11,6 +11,8 @@ using System.Diagnostics;
 using Ballcom.Order.Infrastructure.Data;
 using Ballcom.Warehouse.Infrastructure.Data.Read;
 using Ballcom.Warehouse.Infrastructure.Data.Write;
+using Ballcom.Shipment.Infrastructure.Data.Read;
+using Ballcom.Shipment.Infrastructure.Data.Write;
 
 namespace Ballcom.MigrationService;
 
@@ -42,6 +44,8 @@ public class Worker(
             var shoppingCartContext = scope.ServiceProvider.GetRequiredService<ShoppingCartDbContext>();
             var warehouseWriteContext = scope.ServiceProvider.GetRequiredService<WarehouseWriteDbContext>();
             var warehouseReadContext = scope.ServiceProvider.GetRequiredService<WarehouseReadDbContext>();
+            var shipmentWriteContext = scope.ServiceProvider.GetRequiredService<ShipmentWriteDbContext>();
+            var shipmentReadContext = scope.ServiceProvider.GetRequiredService<ShipmentReadDbContext>();
 
             // Run the migrations
             await RunMigrationAsync(authContext, stoppingToken);
@@ -55,6 +59,8 @@ public class Worker(
             await RunMigrationAsync(shoppingCartContext, stoppingToken);
             await RunMigrationAsync(warehouseWriteContext, stoppingToken);
             await RunMigrationAsync(warehouseReadContext, stoppingToken);
+            await RunMigrationAsync(shipmentWriteContext, stoppingToken);
+            await RunMigrationAsync(shipmentReadContext, stoppingToken);
         } 
         catch (Exception ex)
         {

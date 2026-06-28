@@ -25,6 +25,8 @@ var sqlOrderRead = builder.AddConnectionString("sql-order-read");
 var sqlShoppingCart= builder.AddConnectionString("sql-shopping-cart");
 var sqlWarehouseWrite = builder.AddConnectionString("sql-warehouse-write");
 var sqlWarehouseRead = builder.AddConnectionString("sql-warehouse-read");
+var sqlShipmentWrite = builder.AddConnectionString("sql-shipment-write");
+var sqlShipmentRead = builder.AddConnectionString("sql-shipment-read");
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
@@ -38,6 +40,8 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WithReference(sqlShoppingCart)
     .WithReference(sqlWarehouseWrite)
     .WithReference(sqlWarehouseRead)
+    .WithReference(sqlShipmentWrite)
+    .WithReference(sqlShipmentRead)
     .WaitFor(sqlIdentity)
     .WaitFor(sqlProductCatalogWrite)
     .WaitFor(sqlProductCatalogRead)
@@ -50,7 +54,9 @@ var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migration
     .WaitFor(sqlOrderWrite)
     .WaitFor(sqlOrderRead)
     .WaitFor(sqlWarehouseWrite)
-    .WaitFor(sqlWarehouseRead);
+    .WaitFor(sqlWarehouseRead)
+    .WaitFor(sqlShipmentWrite)
+    .WaitFor(sqlShipmentRead);
 
 // API's 
 var identityApi = builder.AddProject<Projects.Ballcom_Identity_WebAPI>("identity-api")
@@ -95,6 +101,17 @@ var orderApi = builder.AddProject<Projects.Ballcom_Order_WebApi>("ballcom-order-
 var warehouseApi = builder.AddProject<Projects.Ballcom_Warehouse_WebAPI>("warehouse-api")
     .WithReference(sqlWarehouseWrite)
     .WithReference(sqlWarehouseRead)
+    .WithReference(rabbitmq)
+    .WithReference(migration)
+    .WaitFor(migration)
+    .WithEnvironment("JWT__Secret", jwtSecret)
+    .WithEnvironment("JWT__Issuer", jwtIssuer)
+    .WithEnvironment("JWT__Audience", jwtAudience);
+
+
+var shipmentApi = builder.AddProject<Projects.Ballcom_Shipment_WebAPI>("shipment-api")
+    .WithReference(sqlShipmentWrite)
+    .WithReference(sqlShipmentRead)
     .WithReference(rabbitmq)
     .WithReference(migration)
     .WaitFor(migration)

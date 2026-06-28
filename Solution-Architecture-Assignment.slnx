@@ -41,6 +41,12 @@
     <Project Path="src/Ballcom.Warehouse.Infrastructure/Ballcom.Warehouse.Infrastructure.csproj" />
     <Project Path="src/Ballcom.Warehouse.WebAPI/Ballcom.Warehouse.WebAPI.csproj" />
   </Folder>
+  <Folder Name="/src/Ballcom.Shipment/">
+    <Project Path="src/Ballcom.Shipment.Application/Ballcom.Shipment.Application.csproj" />
+    <Project Path="src/Ballcom.Shipment.Domain/Ballcom.Shipment.Domain.csproj" />
+    <Project Path="src/Ballcom.Shipment.Infrastructure/Ballcom.Shipment.Infrastructure.csproj" />
+    <Project Path="src/Ballcom.Shipment.WebAPI/Ballcom.Shipment.WebAPI.csproj" />
+  </Folder>
   <Folder Name="/src/Ballcom.ProductCatalog/">
     <Project Path="src/Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" />
     <Project Path="src/Ballcom.ProductCatalog.Domain/Ballcom.ProductCatalog.Domain.csproj" Id="14cf9aba-c757-4e95-9948-957e99627c2a" />

@@ -34,7 +34,7 @@ public class Worker(
             var productCatalogWriteContext = scope.ServiceProvider.GetRequiredService<ProductCatalogWriteDbContext>();
             var paymentEventStoreContext = scope.ServiceProvider.GetRequiredService<PaymentEventStoreDbContext>();
             var paymentReadContext = scope.ServiceProvider.GetRequiredService<PaymentReadDbContext>();
-            var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
+            var customerServiceContext = scope.ServiceProvider.GetRequiredService<CustomerServiceDbContext>();
             var orderWriteContext = scope.ServiceProvider.GetRequiredService<OrderWriteDbContext>();
             var orderReadContext = scope.ServiceProvider.GetRequiredService<OrderReadDbContext>();
             var shoppingCartContext = scope.ServiceProvider.GetRequiredService<ShoppingCartDbContext>();

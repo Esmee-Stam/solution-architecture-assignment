@@ -18,7 +18,7 @@ services:
       start_period: 20s
 
   rabbitmq:
-    image: rabbitmq:management-alpine
+    image: rabbitmq:3.11-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -70,6 +70,8 @@ services:
     depends_on:
       sql-server:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7238:8080"
     environment:
@@ -88,6 +90,8 @@ services:
     depends_on: 
       sql-server:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       -  "7190:8080"
     environment:
@@ -95,6 +99,28 @@ services:
       ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
       ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
+  order-api:
+    build:
+      context: .
+      dockerfile: src/Ballcom.Order.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7054:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-shopping-cart: "Server=sql-server;Database=ShoppingCartDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-write: "Server=sql-server;Database=OrderWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       JWT__Secret: ${JWT_SECRET}
       JWT__Issuer: ${JWT_ISSUER}
       JWT__Audience: ${JWT_AUDIENCE}

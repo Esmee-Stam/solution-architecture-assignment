@@ -18,7 +18,7 @@ services:
       start_period: 20s
 
   rabbitmq:
-    image: rabbitmq:management-alpine
+    image: rabbitmq:3.11-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -28,8 +28,144 @@ services:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
       timeout: 5s
-      retries: 5
- 
+      retries: 10
+      start_period: 30s
+
+  migration-service: 
+    build:
+      context: .
+      dockerfile: src/Ballcom.MigrationService/Dockerfile
+    depends_on:
+     sql-server:
+      condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__sql-shopping-cart: "Server=sql-server;Database=ShoppingCartDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-read: "Server=sql-server;Database=PaymentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-eventstore: "Server=sql-server;Database=PaymentEventStoreDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-write: "Server=sql-server;Database=OrderWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-customer-service: "Server=sql-server;Database=CustomerServiceDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+
+  import-service:
+    build:
+      context: .
+      dockerfile: src/Ballcom.ImportService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      CsvImport__Url: ${CSV_IMPORT_URL}
+      ConnectionStrings__messaging: amqp://guest:guest@rabbitmq:5672
+    restart: on-failure
+
+  identity-api:
+    build:
+      context: .
+      dockerfile: src/Ballcom.Identity.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7238:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
+  product-catalog-api: 
+    build: 
+      context: .
+      dockerfile: src/Ballcom.ProductCatalog.WebAPI/Dockerfile
+    depends_on: 
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      -  "7190:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-product-catalog-write: "Server=sql-server;Database=ProductCatalogWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-product-catalog-read: "Server=sql-server;Database=ProductCatalogReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
+  order-api:
+    build:
+      context: .
+      dockerfile: src/Ballcom.Order.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7054:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-shopping-cart: "Server=sql-server;Database=ShoppingCartDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-write: "Server=sql-server;Database=OrderWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
+  payment-api: 
+    build:
+      context: .
+      dockerfile: src/Ballcom.Payment.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports: 
+      - "7048:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-payment-read: "Server=sql-server;Database=PaymentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-payment-eventstore: "Server=sql-server;Database=PaymentEventStoreDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+
+  customer-service-api:
+    build:
+      context: .
+      dockerfile: src/Ballcom.CustomerService.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - ":7108:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__sql-customer-service: "Server=sql-server;Database=CustomerServiceDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
 volumes:
   sql-server-data:
   rabbitmq-data:

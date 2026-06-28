@@ -4,19 +4,16 @@ using Ballcom.CustomerService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Ballcom.CustomerService.Infrastructure.Migrations
 {
-    [DbContext(typeof(CustomerDbContext))]
-    [Migration("20260624082637_InitalCreateCustomerDb")]
-    partial class InitalCreateCustomerDb
+    [DbContext(typeof(CustomerServiceDbContext))]
+    partial class CustomerServiceDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

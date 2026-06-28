@@ -12,7 +12,7 @@ builder.AddServiceDefaults();
 builder.AddDefaultAuthentication();
 // Add services to the container.
 
-builder.Services.AddDbContext<CustomerDbContext>(options =>
+builder.Services.AddDbContext<CustomerServiceDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-customer-service"));
 });
@@ -22,6 +22,8 @@ builder.Services.AddScoped<SyncCustomerService>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("customer-service", false));
+
     x.AddConsumer<CustomerImportedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
@@ -34,7 +36,6 @@ builder.Services.AddMassTransit(x =>
         cfg.ConfigureEndpoints(context);
     });
 });
-
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

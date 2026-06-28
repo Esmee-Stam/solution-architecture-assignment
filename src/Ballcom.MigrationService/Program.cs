@@ -44,7 +44,7 @@ builder.Services.AddDbContext<PaymentReadDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-payment-read"));
 });
 
-builder.Services.AddDbContext<CustomerDbContext>(options =>
+builder.Services.AddDbContext<CustomerServiceDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql-customer-service"));
 });

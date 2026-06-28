@@ -80,9 +80,6 @@ public class WarehouseOrderReadRepository(WarehouseReadDbContext dbContext) : IW
             existing.CreatedAt = warehouseOrder.CreatedAt;
             existing.PickedAt = warehouseOrder.PickedAt;
             existing.PackedAt = warehouseOrder.PackedAt;
-
-            // Items do not change during the warehouse flow. The existing item list is left intact
-            // to avoid tracking duplicate entities with the same keys during status-only updates.
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);

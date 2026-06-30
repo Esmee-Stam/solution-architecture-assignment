@@ -42,6 +42,8 @@ builder.Services.AddScoped<GetWarehouseOrderByOrderIdHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("warehouse", false));
+
     x.AddConsumer<PaidOrderConsumer>();
     x.AddConsumer<WarehouseOrderCreatedConsumer>();
     x.AddConsumer<WarehouseOrderPickedConsumer>();

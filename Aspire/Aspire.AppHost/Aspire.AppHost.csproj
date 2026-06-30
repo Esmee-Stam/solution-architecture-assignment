@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\src\Ballcom.Identity.WebAPI\Ballcom.Identity.WebAPI.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.ImportService\Ballcom.ImportService.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.MigrationService\Ballcom.MigrationService.csproj" />
-    <ProjectReference Include="..\..\src\Ballcom.Order.WebAPI\Ballcom.Order.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Ballcom.Order.WebAPI\Ballcom.Order.WebAPI.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.ProductCatalog.WebAPI\Ballcom.ProductCatalog.WebAPI.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.Warehouse.WebAPI\Ballcom.Warehouse.WebAPI.csproj" />
     <ProjectReference Include="..\..\src\Ballcom.Shipment.WebAPI\Ballcom.Shipment.WebAPI.csproj" />

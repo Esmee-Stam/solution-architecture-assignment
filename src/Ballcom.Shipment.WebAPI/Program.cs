@@ -12,6 +12,7 @@ using Ballcom.Shipment.Infrastructure.Messaging;
 using Ballcom.Shipment.Infrastructure.Repository;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,8 @@ builder.Services.AddScoped<GetShipmentByTrackingNumberHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("shipment", false));
+
     x.AddConsumer<WarehouseOrderPackedConsumer>();
     x.AddConsumer<ShipmentCreatedConsumer>();
     x.AddConsumer<ShipmentDispatchedConsumer>();

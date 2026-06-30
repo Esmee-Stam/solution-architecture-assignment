@@ -27,6 +27,7 @@ var sqlWarehouseWrite = builder.AddConnectionString("sql-warehouse-write");
 var sqlWarehouseRead = builder.AddConnectionString("sql-warehouse-read");
 var sqlShipmentWrite = builder.AddConnectionString("sql-shipment-write");
 var sqlShipmentRead = builder.AddConnectionString("sql-shipment-read");
+
 // Migrations
 var migration = builder.AddProject<Projects.Ballcom_MigrationService>("Migrations")
     .WithReference(sqlIdentity)
@@ -78,7 +79,6 @@ var productCatalogApi = builder.AddProject<Projects.Ballcom_ProductCatalog_WebAP
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-
 var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-api")
     .WithReference(sqlPaymentEventStore)
     .WithReference(sqlPaymentRead)
@@ -88,7 +88,7 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-var orderApi = builder.AddProject<Projects.Ballcom_Order_WebApi>("ballcom-order-webapi")
+var orderApi = builder.AddProject<Projects.Ballcom_Order_WebApi>("order-webapi")
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
     .WithReference(sqlShoppingCart)

@@ -146,6 +146,48 @@ services:
       JWT__Issuer: ${JWT_ISSUER}
       JWT__Audience: ${JWT_AUDIENCE}
 
+  warehouse-api: 
+    build: 
+      context: .
+      dockerfile: src/Ballcom.Warehouse.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7064:8080"
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+        ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+        ConnectionStrings__sql-warehouse-write: "Server=sql-server;Database=WarehouseWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+        ConnectionStrings__sql-warehouse-read: "Server=sql-server;Database=WarehouseReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+        JWT__Secret: ${JWT_SECRET}
+        JWT__Issuer: ${JWT_ISSUER}
+        JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
+  shipment-api: 
+    build: 
+      context: .
+      dockerfile: src/Ballcom.Shipment.WebAPI/Dockerfile
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7066:8080"
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+        ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"
+        ConnectionStrings__sql-shipment-write: "Server=sql-server;Database=ShipmentWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+        ConnectionStrings__sql-shipment-read: "Server=sql-server;Database=ShipmentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+        JWT__Secret: ${JWT_SECRET}
+        JWT__Issuer: ${JWT_ISSUER}
+        JWT__Audience: ${JWT_AUDIENCE}
+    restart: on-failure
+
   customer-service-api:
     build:
       context: .

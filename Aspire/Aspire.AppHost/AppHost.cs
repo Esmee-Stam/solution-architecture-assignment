@@ -88,7 +88,7 @@ var paymentApi = builder.AddProject<Projects.Ballcom_Payment_WebAPI>("payment-ap
     .WithEnvironment("JWT__Issuer", jwtIssuer)
     .WithEnvironment("JWT__Audience", jwtAudience);
 
-var orderApi = builder.AddProject<Projects.Ballcom_Order_WebApi>("order-webapi")
+var orderApi = builder.AddProject<Projects.Ballcom_Order_WebAPI>("order-webapi")
     .WithReference(sqlOrderWrite)
     .WithReference(sqlOrderRead)
     .WithReference(sqlShoppingCart)

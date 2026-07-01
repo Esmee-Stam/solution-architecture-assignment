@@ -1,26 +1,30 @@
-﻿using Ballcom.CustomerService.Domain.Domain;
+using Ballcom.CustomerService.Domain.Domain;
 
-namespace Ballcom.CustomerService.Application.Services
+namespace Ballcom.CustomerService.Application.Services;
+
+public class SyncCustomerService(ICustomerRepository repository)
 {
-    public class SyncCustomerService(ICustomerRepository repository)
+    public async Task UpsertCustomerAsync(Customer customer, CancellationToken cancellationToken = default)
     {
-        public async Task UpsertCustomerAsync(Customer customer)
+        if (string.IsNullOrWhiteSpace(customer.PhoneNumber)) return;
+
+        var existingCustomer = await repository.GetByPhoneNumberAsync(customer.PhoneNumber, cancellationToken);
+
+        if (existingCustomer is null)
         {
-            if (string.IsNullOrWhiteSpace(customer.PhoneNumber)) return;
-
-            var existingCustomer = await repository.GetByPhoneNumberAsync(customer.PhoneNumber);
-
-            if (existingCustomer is null)
-            {
-                await repository.AddAsync(customer);
-            } else
-            {
-                existingCustomer.FirstName = customer.FirstName;
-                existingCustomer.LastName = customer.LastName;
-                existingCustomer.CompanyName = customer.CompanyName;
-                existingCustomer.Address = customer.Address;
-            }
-            await repository.SaveChangesAsync();
+            await repository.AddAsync(customer, cancellationToken);
         }
+        else
+        {
+            existingCustomer.UpdateDetails(
+                customer.FirstName,
+                customer.LastName,
+                customer.CompanyName,
+                customer.PhoneNumber,
+                customer.Address,
+                customer.IdentityUserId);
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
     }
 }

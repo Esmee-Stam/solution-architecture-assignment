@@ -1,4 +1,10 @@
 using Ballcom.CustomerService.Application;
+using Ballcom.CustomerService.Application.Commands.CreateCustomer;
+using Ballcom.CustomerService.Application.Commands.UpdateCustomer;
+using Ballcom.CustomerService.Application.Commands.UpsertImportedCustomer;
+using Ballcom.CustomerService.Application.Queries.GetCustomerById;
+using Ballcom.CustomerService.Application.Queries.GetCustomerByPhoneNumber;
+using Ballcom.CustomerService.Application.Queries.GetCustomers;
 using Ballcom.CustomerService.Application.Services;
 using Ballcom.CustomerService.Infrastructure.Data;
 using Ballcom.CustomerService.Infrastructure.Messaging;
@@ -10,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddDefaultAuthentication();
-// Add services to the container.
+
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<CustomerServiceDbContext>(options =>
 {
@@ -20,9 +27,17 @@ builder.Services.AddDbContext<CustomerServiceDbContext>(options =>
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<SyncCustomerService>();
 
+builder.Services.AddScoped<CreateCustomerHandler>();
+builder.Services.AddScoped<UpdateCustomerHandler>();
+builder.Services.AddScoped<UpsertImportedCustomerHandler>();
+
+builder.Services.AddScoped<GetCustomersHandler>();
+builder.Services.AddScoped<GetCustomerByIdHandler>();
+builder.Services.AddScoped<GetCustomerByPhoneNumberHandler>();
+
 builder.Services.AddMassTransit(x =>
 {
-    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("customer-service", false));
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("customer", false));
 
     x.AddConsumer<CustomerImportedConsumer>();
 
@@ -32,20 +47,17 @@ builder.Services.AddMassTransit(x =>
             ?? "amqp://guest:guest@localhost:5672/";
 
         cfg.Host(new Uri(rabbitMqConnectionString));
-
         cfg.ConfigureEndpoints(context);
     });
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

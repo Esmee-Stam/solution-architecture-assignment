@@ -49,6 +49,10 @@ services:
       ConnectionStrings__sql-order-read: "Server=sql-server;Database=OrderReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__sql-identity: "Server=sql-server;Database=IdentityDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__sql-customer-service: "Server=sql-server;Database=CustomerServiceDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-warehouse-write: "Server=sql-server;Database=WarehouseWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-warehouse-read: "Server=sql-server;Database=WarehouseReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-shipment-write: "Server=sql-server;Database=ShipmentWriteDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__sql-shipment-read: "Server=sql-server;Database=ShipmentReadDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
 
   import-service:
     build:
@@ -198,7 +202,7 @@ services:
       rabbitmq:
         condition: service_healthy
     ports:
-      - ":7108:8080"
+      - "7108:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__messaging: "amqp://guest:guest@rabbitmq:5672"

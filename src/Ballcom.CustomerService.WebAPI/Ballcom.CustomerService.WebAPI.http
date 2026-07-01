@@ -1,6 +1,26 @@
-@Ballcom.CustomerService.WebAPI_HostAddress = http://localhost:5037
+@Ballcom.CustomerService.WebAPI_HostAddress = https://localhost:7108
+@CustomerId = 00000000-0000-0000-0000-000000000000
+@PhoneNumber = +31612345678
 
-GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/weatherforecast/
+GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/health
 Accept: application/json
 
 ###
+
+GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/api/customers?pageNumber=1&pageSize=50
+Accept: application/json
+
+###
+
+GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/api/customers/{{CustomerId}}
+Accept: application/json
+
+###
+
+GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/api/customers/phone/{{PhoneNumber}}
+Accept: application/json
+
+###
+
+GET {{Ballcom.CustomerService.WebAPI_HostAddress}}/api/customers/{{CustomerId}}/overview
+Accept: application/json

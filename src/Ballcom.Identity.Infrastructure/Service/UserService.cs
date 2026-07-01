@@ -28,10 +28,18 @@ namespace Ballcom.Identity.Infrastructure.Service
             string password,
             string role)
         {
+            firstName = firstName.Trim();
+            lastName = lastName.Trim();
+            companyName = string.IsNullOrWhiteSpace(companyName) ? null : companyName.Trim();
+            phoneNumber = string.IsNullOrWhiteSpace(phoneNumber) ? null : phoneNumber.Trim();
+            address = string.IsNullOrWhiteSpace(address) ? null : address.Trim();
+            email = email.Trim();
+            role = role.Trim();
+
             if (
-                    role != UserRole.Customer 
-                    && role != UserRole.WarehouseEmployee 
-                    && role != UserRole.Supplier 
+                    role != UserRole.Customer
+                    && role != UserRole.WarehouseEmployee
+                    && role != UserRole.Supplier
                     && role != UserRole.CustomerServiceEmployee
                 ) return false;
 
@@ -68,9 +76,11 @@ namespace Ballcom.Identity.Infrastructure.Service
 
             return false;
         }
-        
+
         public async Task<string?> LoginAsync(string email, string password)
         {
+            email = email.Trim();
+
             var signInResult = await signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
 
             if (!signInResult.Succeeded) return null;
@@ -90,7 +100,6 @@ namespace Ballcom.Identity.Infrastructure.Service
         {
             await signInManager.SignOutAsync();
         }
-
 
         private string GenerateJwtToken(IdentityUser user, IList<string> roles)
         {

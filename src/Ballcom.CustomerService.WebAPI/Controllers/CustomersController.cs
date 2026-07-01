@@ -1,10 +1,9 @@
-using Ballcom.CustomerService.Application.Commands.CreateCustomer;
-using Ballcom.CustomerService.Application.Commands.UpdateCustomer;
-using Ballcom.CustomerService.Application.Commands.UpsertImportedCustomer;
 using Ballcom.CustomerService.Application.Queries.GetCustomerById;
 using Ballcom.CustomerService.Application.Queries.GetCustomerByPhoneNumber;
+using Ballcom.CustomerService.Application.Queries.GetCustomerOrders;
+using Ballcom.CustomerService.Application.Queries.GetCustomerOverview;
+using Ballcom.CustomerService.Application.Queries.GetCustomerShipments;
 using Ballcom.CustomerService.Application.Queries.GetCustomers;
-using Ballcom.CustomerService.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ballcom.CustomerService.WebAPI.Controllers;
@@ -15,9 +14,9 @@ public class CustomersController(
     GetCustomersHandler getCustomersHandler,
     GetCustomerByIdHandler getCustomerByIdHandler,
     GetCustomerByPhoneNumberHandler getCustomerByPhoneNumberHandler,
-    CreateCustomerHandler createCustomerHandler,
-    UpdateCustomerHandler updateCustomerHandler,
-    UpsertImportedCustomerHandler upsertImportedCustomerHandler) : ControllerBase
+    GetCustomerOrdersHandler getCustomerOrdersHandler,
+    GetCustomerShipmentsHandler getCustomerShipmentsHandler,
+    GetCustomerOverviewHandler getCustomerOverviewHandler) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetCustomers(
@@ -44,83 +43,24 @@ public class CustomersController(
         return customer is null ? NotFound() : Ok(customer);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerModel model, CancellationToken cancellationToken = default)
+    [HttpGet("{customerId:guid}/orders")]
+    public async Task<IActionResult> GetCustomerOrders(Guid customerId, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var result = await createCustomerHandler.Handle(new CreateCustomerCommand(
-                model.FirstName,
-                model.LastName,
-                model.CompanyName,
-                model.PhoneNumber,
-                model.Address,
-                model.IdentityUserId), cancellationToken);
-
-            return CreatedAtAction(nameof(GetCustomerById), new { customerId = result.CustomerId }, result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(ex.Message);
-        }
+        var orders = await getCustomerOrdersHandler.Handle(new GetCustomerOrdersQuery(customerId), cancellationToken);
+        return Ok(orders);
     }
 
-    [HttpPut("{customerId:guid}")]
-    public async Task<IActionResult> UpdateCustomer(Guid customerId, [FromBody] UpdateCustomerModel model, CancellationToken cancellationToken = default)
+    [HttpGet("{customerId:guid}/shipments")]
+    public async Task<IActionResult> GetCustomerShipments(Guid customerId, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            await updateCustomerHandler.Handle(new UpdateCustomerCommand(
-                customerId,
-                model.FirstName,
-                model.LastName,
-                model.CompanyName,
-                model.PhoneNumber,
-                model.Address,
-                model.IdentityUserId), cancellationToken);
-
-            return NoContent();
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
-        {
-            return NotFound(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(ex.Message);
-        }
+        var shipments = await getCustomerShipmentsHandler.Handle(new GetCustomerShipmentsQuery(customerId), cancellationToken);
+        return Ok(shipments);
     }
 
-    [HttpPost("imported")]
-    public async Task<IActionResult> UpsertImportedCustomer([FromBody] ImportCustomerModel model, CancellationToken cancellationToken = default)
+    [HttpGet("{customerId:guid}/overview")]
+    public async Task<IActionResult> GetCustomerOverview(Guid customerId, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var result = await upsertImportedCustomerHandler.Handle(new UpsertImportedCustomerCommand(
-                model.FirstName,
-                model.LastName,
-                model.CompanyName,
-                model.PhoneNumber,
-                model.Address,
-                model.IdentityUserId), cancellationToken);
-
-            return Ok(result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var overview = await getCustomerOverviewHandler.Handle(new GetCustomerOverviewQuery(customerId), cancellationToken);
+        return overview is null ? NotFound() : Ok(overview);
     }
 }

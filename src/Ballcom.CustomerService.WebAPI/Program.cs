@@ -1,9 +1,9 @@
 using Ballcom.CustomerService.Application;
-using Ballcom.CustomerService.Application.Commands.CreateCustomer;
-using Ballcom.CustomerService.Application.Commands.UpdateCustomer;
-using Ballcom.CustomerService.Application.Commands.UpsertImportedCustomer;
 using Ballcom.CustomerService.Application.Queries.GetCustomerById;
 using Ballcom.CustomerService.Application.Queries.GetCustomerByPhoneNumber;
+using Ballcom.CustomerService.Application.Queries.GetCustomerOrders;
+using Ballcom.CustomerService.Application.Queries.GetCustomerOverview;
+using Ballcom.CustomerService.Application.Queries.GetCustomerShipments;
 using Ballcom.CustomerService.Application.Queries.GetCustomers;
 using Ballcom.CustomerService.Application.Services;
 using Ballcom.CustomerService.Infrastructure.Data;
@@ -27,19 +27,25 @@ builder.Services.AddDbContext<CustomerServiceDbContext>(options =>
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<SyncCustomerService>();
 
-builder.Services.AddScoped<CreateCustomerHandler>();
-builder.Services.AddScoped<UpdateCustomerHandler>();
-builder.Services.AddScoped<UpsertImportedCustomerHandler>();
+// Internal projection update handler. CustomerService remains read-only for external HTTP users.
 
 builder.Services.AddScoped<GetCustomersHandler>();
 builder.Services.AddScoped<GetCustomerByIdHandler>();
 builder.Services.AddScoped<GetCustomerByPhoneNumberHandler>();
+builder.Services.AddScoped<GetCustomerOrdersHandler>();
+builder.Services.AddScoped<GetCustomerShipmentsHandler>();
+builder.Services.AddScoped<GetCustomerOverviewHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("customer", false));
 
     x.AddConsumer<CustomerImportedConsumer>();
+    x.AddConsumer<OrderPlacedConsumer>();
+    x.AddConsumer<OrderStatusChangedConsumer>();
+    x.AddConsumer<ShipmentCreatedConsumer>();
+    x.AddConsumer<ShipmentDispatchedConsumer>();
+    x.AddConsumer<ShipmentDeliveredConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {

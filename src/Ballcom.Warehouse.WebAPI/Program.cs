@@ -45,9 +45,6 @@ builder.Services.AddMassTransit(x =>
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("warehouse", false));
 
     x.AddConsumer<PaidOrderConsumer>();
-    x.AddConsumer<WarehouseOrderCreatedConsumer>();
-    x.AddConsumer<WarehouseOrderPickedConsumer>();
-    x.AddConsumer<WarehouseOrderPackedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {

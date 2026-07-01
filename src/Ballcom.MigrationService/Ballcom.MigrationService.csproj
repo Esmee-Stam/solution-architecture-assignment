@@ -24,6 +24,8 @@
     <ProjectReference Include="..\Ballcom.Identity.Infrastructure\Ballcom.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Ballcom.Order.Infrastructure\Ballcom.Order.Infrastructure.csproj" />
     <ProjectReference Include="..\Ballcom.ProductCatalog.Infrastructure\Ballcom.ProductCatalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ballcom.Warehouse.Infrastructure\Ballcom.Warehouse.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ballcom.Shipment.Infrastructure\Ballcom.Shipment.Infrastructure.csproj" />
   </ItemGroup>
 
 	</Project>

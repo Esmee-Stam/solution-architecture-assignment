@@ -1,0 +1,4 @@
+@Ballcom.Warehouse.WebAPI_HostAddress = http://localhost:5264
+
+GET {{Ballcom.Warehouse.WebAPI_HostAddress}}/api/warehouse-orders
+Accept: application/json

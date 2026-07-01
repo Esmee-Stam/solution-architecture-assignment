@@ -27,13 +27,25 @@
     <Project Path="src/Ballcom.Order.Application/Ballcom.Order.Application.csproj" Id="102ec4f0-f056-40e8-bf2e-0d5b07e29410" />
     <Project Path="src/Ballcom.Order.Domain/Ballcom.Order.Domain.csproj" Id="444523a6-6f2c-4bb3-9e94-81b0cb098a98" />
     <Project Path="src/Ballcom.Order.Infrastructure/Ballcom.Order.Infrastructure.csproj" Id="ea941e9f-103b-4f0f-a320-36e2a3eb9a57" />
-    <Project Path="src/Ballcom.Order.WebAPI/Ballcom.Order.WebAPI.csproj" />
+    <Project Path="src/Ballcom.Order.WebAPI/Ballcom.Order.WebApi.csproj" DisplayName="Ballcom.Order.WebAPI" />
   </Folder>
   <Folder Name="/src/Ballcom.Payment/">
     <Project Path="src/Ballcom.Payment.Application/Ballcom.Payment.Application.csproj" />
     <Project Path="src/Ballcom.Payment.Domain/Ballcom.Payment.Domain.csproj" />
     <Project Path="src/Ballcom.Payment.Infrastructure/Ballcom.Payment.Infrastructure.csproj" />
     <Project Path="src/Ballcom.Payment.WebAPI/Ballcom.Payment.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Ballcom.Warehouse/">
+    <Project Path="src/Ballcom.Warehouse.Application/Ballcom.Warehouse.Application.csproj" />
+    <Project Path="src/Ballcom.Warehouse.Domain/Ballcom.Warehouse.Domain.csproj" />
+    <Project Path="src/Ballcom.Warehouse.Infrastructure/Ballcom.Warehouse.Infrastructure.csproj" />
+    <Project Path="src/Ballcom.Warehouse.WebAPI/Ballcom.Warehouse.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Ballcom.Shipment/">
+    <Project Path="src/Ballcom.Shipment.Application/Ballcom.Shipment.Application.csproj" />
+    <Project Path="src/Ballcom.Shipment.Domain/Ballcom.Shipment.Domain.csproj" />
+    <Project Path="src/Ballcom.Shipment.Infrastructure/Ballcom.Shipment.Infrastructure.csproj" />
+    <Project Path="src/Ballcom.Shipment.WebAPI/Ballcom.Shipment.WebAPI.csproj" />
   </Folder>
   <Folder Name="/src/Ballcom.ProductCatalog/">
     <Project Path="src/Ballcom.ProductCatalog.Application/Ballcom.ProductCatalog.Application.csproj" />

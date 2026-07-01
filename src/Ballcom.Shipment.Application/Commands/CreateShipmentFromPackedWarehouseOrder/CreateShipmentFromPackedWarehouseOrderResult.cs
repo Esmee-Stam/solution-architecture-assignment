@@ -1,0 +1,3 @@
+namespace Ballcom.Shipment.Application.Commands.CreateShipmentFromPackedWarehouseOrder;
+
+public record CreateShipmentFromPackedWarehouseOrderResult(Guid ShipmentId, string TrackingNumber);

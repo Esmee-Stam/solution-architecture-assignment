@@ -1,0 +1,4 @@
+@Ballcom.Shipment.WebAPI_HostAddress = https://localhost:7066
+
+GET {{Ballcom.Shipment.WebAPI_HostAddress}}/health
+Accept: application/json

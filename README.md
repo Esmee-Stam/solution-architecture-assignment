@@ -1,7 +1,9 @@
 # Solution-Architecture-Assignment - Ball.com
 
 ## About this project
-This project is a .NET 10 microservices solution consisting of multiple API's, a migration service, RabbitMQ, and a SQL Server database.
+Ball.com is a global retail platform designed as a microservices-based .NET solution. The system supports the complete order process, from placing an order and processing payments to warehouse fulfillment, logistics, and order tracking.
+
+The platform also supports trusted third-party suppliers, asynchronous communication between services, and customer service processes. The solution uses technologies such as .NET 10, RabbitMQ, SQL Server, Docker, and .NET Aspire.
 
 ---
 
